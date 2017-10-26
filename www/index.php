@@ -1,8 +1,9 @@
 <?php
+session_start();
 require_once('config.php');
 require_once('models/Main.php');
-require_once('classes/auth.class.php');
-require_once('classes/help.class.php');
+require_once('classes/Auth.php');
+require_once('classes/Help.php');
 require_once('controllers/Main.php');
 $controllers 	= new MainController();
 $url_data 	= explode('/', $_SERVER['REQUEST_URI']);

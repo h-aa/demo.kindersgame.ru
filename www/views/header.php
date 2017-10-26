@@ -31,28 +31,34 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
           </button>                                                                                                                         
           <a class="navbar-brand" href="/">Детский центр "София"</a>                                                                                 
         </div>                                                                                                                              
-        <div class="navbar-collapse collapse">                                                                                              
-        <!--  <ul class="nav navbar-nav">                                                                                                       
-            <li class="active"><a href="#">Home</a></li>                                                                                    
-            <li><a href="#about">About</a></li>                                                                                             
-            <li><a href="#contact">Contact</a></li>                                                                                         
-            <li class="dropdown">                                                                                                           
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>                                 
-              <ul class="dropdown-menu">                                                                                                    
-                <li><a href="#">Action</a></li>                                                                                             
-                <li><a href="#">Another action</a></li>                                                                                     
-                <li><a href="#">Something else here</a></li>                                                                                
-                <li class="divider"></li>                                                                                                   
-                <li class="dropdown-header">Nav header</li>                                                                                 
-                <li><a href="#">Separated link</a></li>                                                                                     
-                <li><a href="#">One more separated link</a></li>                                                                            
-              </ul>                                                                                                                         
-            </li>                                                                                                                           
-          </ul>
--->                                                                                                                             
+        <div class="navbar-collapse collapse">                                                                                                                                                                                                                           
           <ul class="nav navbar-nav navbar-right">                                                                                          
             <li <?=$this->help->urlActive('schedule')?>><a href="/schedule/">Расписание</a></li>                                                                                          
-            <li <?=$this->help->urlActive('cabinet')?>><a href="/cabinet/">Личный кабинет</a></li>                                                                            
+        <?php if($this->auth->isAdmin()){ ?>
+            <li>                                                                                                          
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Администрирование <b class="caret"></b></a>                                 
+                <ul class="dropdown-menu">
+                    <li class="divider"></li>                                                                                                   
+                    <li class="dropdown-header">Расписание</li>                                                                                 
+                    <li><a href="#">Добавить занятие</a></li>
+                    <li><a href="#">Удалить занятие</a></li>                                                                                                                                                                      
+                    <li class="divider"></li>                                                                                                   
+                    <li class="dropdown-header">Ученики</li>                                                                                 
+                    <li><a href="#">Добавить ученика</a></li>                                                                                     
+                    <li><a href="#">Редактировать ученика</a></li>
+                    <li class="divider"></li>                                                                                                   
+                    <li class="dropdown-header">Преподаватели</li>                                                                                 
+                    <li <?=$this->help->urlActive('teacher_add')?>><a href="/teacher_add/">Добавить преподавателя</a></li>
+                    <li><a href="#">Редактировать преподавателя</a></li>
+                    <li><a href="#">Часы работы преподавателя</a></li>
+                </ul>                
+            </li>
+        <?php } ?>
+        <?php if($this->auth->isLogin()){ ?>
+            <li <?=$this->help->urlActive('logout')?>><a href="/logout/">Выход</a></li>
+        <?php } else { ?>
+            <li <?=$this->help->urlActive('login')?>><a href="/login/">Авторизация</a></li>
+        <?php } ?>        
           </ul>                                                                                                                             
         </div><!--/.nav-collapse -->                                                                                                        
       </div>                                                                                                                                
