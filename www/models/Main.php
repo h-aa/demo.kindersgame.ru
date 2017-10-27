@@ -19,7 +19,7 @@ class MainModel
 
 	}
 
-	function add_teacher($t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active)
+	function addTeacher($t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active)
 	{
 		$t_first_name 	= $this->mysql->real_escape_string($t_first_name);
         $t_second_name 	= $this->mysql->real_escape_string($t_second_name);
@@ -32,6 +32,35 @@ class MainModel
         $result         = $this->mysql->query($query);
         return $result;	
 	}
+
+    function getTeachers()
+    {
+        $query          = "SELECT * FROM `teachers` ORDER BY `t_second_name` ASC";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
 	
+    function getTeacherData($t_id)
+    {
+        $t_id           = $this->mysql->real_escape_string($t_id);
+        $query          = "SELECT * FROM `teachers` WHERE `t_id` = '".$t_id."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function editTeacherData($t_id, $t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active)
+	{
+        $t_id           = $this->mysql->real_escape_string($t_id);
+		$t_first_name 	= $this->mysql->real_escape_string($t_first_name);
+        $t_second_name 	= $this->mysql->real_escape_string($t_second_name);
+        $t_third_name 	= $this->mysql->real_escape_string($t_third_name);
+        $t_email 	    = $this->mysql->real_escape_string($t_email);
+        $t_phone 	    = $this->mysql->real_escape_string($t_phone);
+        $t_comment 	    = $this->mysql->real_escape_string($t_comment);
+        $t_active 	    = $this->mysql->real_escape_string($t_active);
+        $query          = "UPDATE `teachers` SET `t_first_name`='".$t_first_name."',`t_second_name`='".$t_second_name."',`t_third_name`='".$t_third_name."',`t_phone`='".$t_phone."',`t_email`='".$t_email."',`t_comment`='".$t_comment."',`t_active`='".$t_active."' WHERE `t_id` = '".$t_id."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
 }
 ?>
