@@ -77,14 +77,55 @@ class MainController
 
     public function teacher_add()
     {
-        $this->help->action = 'teacher_add';
         if(!$this->auth->isAdmin())
         {
             header('Location: /');
             exit();
         }
         
-        require_once("views/teacher_add.php");
+        $this->help->action = 'teacher_add';
+        
+        $t_first_name       = $_POST['t_first_name']    ? htmlspecialchars($_POST['t_first_name'])  : '';
+        $t_second_name      = $_POST['t_second_name']   ? htmlspecialchars($_POST['t_second_name']) : '';
+        $t_third_name       = $_POST['t_third_name']    ? htmlspecialchars($_POST['t_third_name'])  : '';
+        $t_email            = $_POST['t_email']         ? htmlspecialchars($_POST['t_email'])       : '';
+        $t_phone            = $_POST['t_phone']         ? htmlspecialchars($_POST['t_phone'])       : '';
+        $t_comment          = $_POST['t_comment']       ? htmlspecialchars($_POST['t_comment'])     : '';
+        $t_active           = $_POST['t_active']        ? htmlspecialchars($_POST['t_active'])      : '';
+
+        if(!$_POST)
+        {
+            require_once("views/teacher_add.php");
+            exit();
+        }
+        if(!$t_first_name)
+        {
+            $this->help->error[] = 'Не указано имя преподавателя';
+        }
+        if(!$t_second_name)
+        {
+            $this->help->error[] = 'Не указана фамилия преподавателя';
+        }
+
+		if($t_email && !filter_var($t_email, FILTER_VALIDATE_EMAIL))
+		{
+			$this->help->error[] = 'Неверный формат Email';
+		}
+
+        if($this->help->error)
+        {
+            require_once("views/teacher_add.php");
+            exit();
+        }
+
+        if($this->model->add_teacher($t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active))
+        {
+            require_once("views/teacher_add_success.php");
+            exit();            
+        } else {
+            require_once("views/teacher_add_error.php");
+            exit();            
+        }
     }
 }
 ?>

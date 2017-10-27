@@ -18,13 +18,13 @@ class Help
     {
         if($this->error)
         {   
-            $result = '<ul>';
+            $error_data = '<ul>';
             foreach($this->error as $message)
             {
-                $result .= '<li>'.$message.'</li>';
+                $error_data .= '<li>'.$message.'</li>';
             }
-            $result .='</ul>';
-            return $result;
+            $error_data .='</ul>';
+            require_once('views/modal/error.php');
         }
     }
 }

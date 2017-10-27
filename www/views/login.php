@@ -7,8 +7,8 @@ require_once('header.php');
         <input type="text" name="user_name" class="form-control" placeholder="Ваш логин" required autofocus>
         <input type="password" name="user_password" class="form-control" placeholder="Ваш пароль" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-        <div class="error-message""><?=$this->help->error()?></div>
     </form>
+<?=$this->help->error()?>
 <?php
 require_once('footer.php');
 ?>

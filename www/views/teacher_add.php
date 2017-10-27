@@ -5,10 +5,9 @@ require_once('header.php');
 <data class="col-md-12">
       <div class="panel panel-default">
       <div class="panel-heading">Форма добавления нового преподавателя</div>
-      <div class="panel-body">
+      <div class="panel-body">   
         <form class="form-horizontal" method="post" id="teacher_add" action="/teacher_add">
           <fieldset>
-
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_second_name">Фамилия*</label>  
                 <div class="col-md-4">
@@ -33,7 +32,7 @@ require_once('header.php');
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_email">Email</label>  
                 <div class="col-md-4">
-                  <input id="t_email" name="t_email" value="<?=$t_email?>" type="t_email" placeholder="" class="form-control input-md">
+                  <input id="t_email" name="t_email" value="<?=$t_email?>" type="email" placeholder="" class="form-control input-md">
                 </div>
             </div>
 
@@ -55,7 +54,7 @@ require_once('header.php');
               <label class="col-md-4 control-label" for="t_active">Активен</label>  
                 <div class="col-md-1">
                     <div class="checkbox">
-                        <input type="checkbox" id="t_active" name="е_active" value="1" checked>
+                        <input type="checkbox" id="t_active" name="t_active" value="1" checked>
                     </div>
                 </div>
             </div>
@@ -66,16 +65,12 @@ require_once('header.php');
                 <button type="submit" id="btn" class="btn btn-primary btn-block">Добавить преподавателя</button>
               </div>  
             </div>
-
           </fieldset>
         </form>
       </div>
     </div>		
     </data>        
+<?=$this->help->error()?>
 <?php
 require_once('footer.php');
 ?>
-<script type="text/javascript">
-//Назначаем маски ввода
-  $("#phone").mask("+7(999)999-99-99");
-</script>
