@@ -210,5 +210,80 @@ class MainController
             exit();            
         }
     }
+
+    public function teacher_time()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'teacher_time';
+        
+        $t_id               = $_POST['t_id'] ? htmlspecialchars($_POST['t_id'])          : '';      
+        
+        if(!$t_id)
+        {
+            $teachers = $this->model->getTeachers();
+            require_once('views/teacher_select_to_time.php');
+            exit();
+        }
+
+        $teacher_data = $this->model->getTeacherData($t_id);
+        
+        if($teacher_data->num_rows === 0)
+        {   
+            $this->auth->userLogout();
+            header('Location: /');
+            exit();          
+        }
+
+        $teacher_time_data  = $this->model->getTeacherTimeData($t_id);
+        $time_data          = $teacher_time_data->num_rows > 0 ? $teacher_time_data->fetch_assoc() : '';
+        if($_POST['time_data'])
+        {
+            $this->model->delTeacherTimeData($t_id);
+            foreach($_POST['time_data'] as $a=>$b)
+            {
+                
+                foreach($_POST['time_data'][$a] as $b=>$c){
+                    if($c['tt_hour_start'] == $c['tt_hour_end'] && $c['tt_minut_start'] == $c['tt_minut_end'])
+                    {
+                        continue;
+                    }
+
+                    if($c['tt_hour_start'] > $c['tt_hour_end'])
+                    {
+                        continue;
+                    }
+
+                    if($c['tt_hour_start'] == $c['tt_hour_end'] && $c['tt_minut_start'] > $c['tt_minut_end'])
+                    {
+                        continue;
+                    }
+                    $tt_teacher_id          = $t_id;
+                    $tt_day                 = htmlspecialchars($a);
+                    $tt_hour_start          = htmlspecialchars($c['tt_hour_start']);
+                    $tt_minut_start         = htmlspecialchars($c['tt_minut_start']);
+                    $tt_hour_end            = htmlspecialchars($c['tt_hour_end']);
+                    $tt_minut_end           = htmlspecialchars($c['tt_minut_end']);
+                    $tt_active              = $c['tt_active'] ? '1' : '0';
+                    $check_data = $this->model->checkTeacherTimeData($tt_teacher_id, $tt_day, $tt_hour_start, $tt_minut_start, $tt_hour_end, $tt_minut_end);
+                    if($check_data->num_rows > 0)
+                    {
+                        continue;
+                    }
+                    if(!$this->model->addTeacherTimeData($tt_teacher_id, $tt_day, $tt_hour_start, $tt_minut_start, $tt_hour_end, $tt_minut_end, $tt_active))
+                    {
+                         $this->help->error[] = 'Не удалось добавить время '.$tt_hour_start.':'.$tt_minut_start.' - '.$tt_hour_end.':'.$tt_minut_end.' для '.$this->help->dayWeek($tt_day).'!';
+                    }
+                }
+            }
+        }
+
+            require_once("views/teacher_time.php");
+       
+    }
 }
 ?>

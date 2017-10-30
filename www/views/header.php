@@ -7,8 +7,10 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
     <title>Детский центр "София"</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/html/css/bootstrap.css" rel="stylesheet">
-    <link href="/html/css/style.css" rel="stylesheet">    
+    <link href="/html/css/bootstrap.css?v=<?=mktime()?>" rel="stylesheet">
+     <link href="/html/css/font-awesome.css?v=<?=mktime()?>" rel="stylesheet">
+    <link href="/html/css/style.css?v=<?=mktime()?>" rel="stylesheet">
+    <link href="https://kindersgame.ru/image/catalog/zastavkaumkrugsmol.jpg" rel="icon" />    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -50,7 +52,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                     <li class="dropdown-header">Преподаватели</li>                                                                                 
                     <li <?=$this->help->urlActive('teacher_add')?>><a href="/teacher_add/">Добавить преподавателя</a></li>
                     <li <?=$this->help->urlActive('teacher_edit')?>><a href="/teacher_edit/">Редактировать преподавателя</a></li>
-                    <li><a href="#">Часы работы преподавателя</a></li>
+                    <li <?=$this->help->urlActive('teacher_time')?>><a href="/teacher_time/">Редактировать расписание преподавателя</a></li>
                 </ul>                
             </li>
         <?php } ?>

@@ -62,5 +62,57 @@ class MainModel
         $result         = $this->mysql->query($query);
         return $result;
     }
+
+    function getTeacherTimeData($t_id)
+    {
+        $t_id           = $this->mysql->real_escape_string($t_id);
+        $query          = "SELECT * FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function addTeacherTimeData($tt_teacher_id, $tt_day, $tt_hour_start, $tt_minut_start, $tt_hour_end, $tt_minut_end, $tt_active)
+    {
+        $tt_teacher_id          = $this->mysql->real_escape_string($tt_teacher_id);
+        $tt_day                 = $this->mysql->real_escape_string($tt_day);
+        $tt_hour_start          = $this->mysql->real_escape_string($tt_hour_start);
+        $tt_minut_start         = $this->mysql->real_escape_string($tt_minut_start);
+        $tt_hour_end            = $this->mysql->real_escape_string($tt_hour_end);
+        $tt_minut_end           = $this->mysql->real_escape_string($tt_minut_end);
+        $tt_active              = $this->mysql->real_escape_string($tt_active);
+        $query                  = "INSERT INTO `teachers_time`(`tt_teacher_id`, `tt_day`, `tt_hour_start`, `tt_minut_start`, `tt_hour_end`, `tt_minut_end`, `tt_active`) VALUES ('".$tt_teacher_id."', '".$tt_day."', '".$tt_hour_start."', '".$tt_minut_start."', '".$tt_hour_end."', '".$tt_minut_end."', '".$tt_active."')";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function delTeacherTimeData($t_id)
+    {
+        $t_id           = $this->mysql->real_escape_string($t_id);
+        $query          = "DELETE FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function checkTeacherTimeData($tt_teacher_id, $tt_day, $tt_hour_start, $tt_minut_start, $tt_hour_end, $tt_minut_end)
+    {
+        $tt_teacher_id          = $this->mysql->real_escape_string($tt_teacher_id);
+        $tt_day                 = $this->mysql->real_escape_string($tt_day);
+        $tt_hour_start          = $this->mysql->real_escape_string($tt_hour_start);
+        $tt_minut_start         = $this->mysql->real_escape_string($tt_minut_start);
+        $tt_hour_end            = $this->mysql->real_escape_string($tt_hour_end);
+        $tt_minut_end           = $this->mysql->real_escape_string($tt_minut_end);
+        $query                  = "SELECT * FROM `teachers_time` 
+                                WHERE `tt_teacher_id` = '".$tt_teacher_id."' 
+                                AND `tt_day` = '".$tt_day."' 
+                                AND `tt_hour_start` = '".$tt_hour_start."' 
+                                AND `tt_minut_start` = '".$tt_minut_start."' 
+                                AND `tt_hour_end` = '".$tt_hour_end."' 
+                                AND `tt_minut_end` = '".$tt_minut_end."' 
+                                ";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+
 }
 ?>
