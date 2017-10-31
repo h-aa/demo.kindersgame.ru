@@ -56,7 +56,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Предметы</li>
                     <li <?=$this->help->urlActive('subject_add')?>><a href="/subject_add/">Добавить предмет</a></li>
-                    <li <?=$this->help->urlActive('subject_edit')?>><a href="/subject_add/">Редактировать предмет</a></li>                                        
+                    <li <?=$this->help->urlActive('subject_edit')?>><a href="/subject_edit/">Редактировать предмет</a></li>                                        
                 </ul>                
             </li>
         <?php } ?>

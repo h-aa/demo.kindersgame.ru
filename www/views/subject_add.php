@@ -11,7 +11,7 @@ require_once('header.php');
             <div class="form-group">
               <label class="col-md-4 control-label" for="s_name">Название предмета*</label>  
                 <div class="col-md-4">
-                  <input id="s_name" name="s_name" value="<?=$t_second_name?>" type="text" placeholder="" class="form-control input-md" required>
+                  <input id="s_name" name="s_name" value="<?=$s_name?>" type="text" placeholder="" class="form-control input-md" required>
                 </div>
             </div>
 

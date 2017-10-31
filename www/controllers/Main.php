@@ -289,8 +289,114 @@ class MainController
 
     public function subject_add()
     {
-        require_once("views/subject_add.php");
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'subject_add';
+        
+        $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
+        $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';
+        
+        if(!$_POST)
+        {
+            require_once("views/subject_add.php");
+            exit();
+        }
+        
+        if(!$s_name)
+        {
+            $this->help->error[] = 'Не указано название предмета';    
+        }
+        $check_data = $this->model->checkSubjectName($s_name);
+        if($check_data->num_rows > 0)
+        {
+            $this->help->error[] = 'Предмет с таким названием был ранее добавлен';    
+        }
+
+        if($this->help->error)
+        {
+            require_once("views/subject_add.php");
+            exit();
+        }
+
+        if($this->model->addSubject($s_name, $s_active))
+        {
+            require_once("views/subject_add_success.php");
+            exit();            
+        } else {
+            require_once("views/subject_add_error.php");
+            exit();            
+        }
+        
     }
+
+    public function subject_edit()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'subject_edit';
+        $edit               = $_POST['edit']            ? htmlspecialchars($_POST['edit'])          : '';
+        $s_id               = $_POST['s_id']            ? htmlspecialchars($_POST['s_id'])          : '';
+
+
+        if(!$s_id)
+        {
+            $subjects           = $this->model->getSubjects();     
+            require_once("views/subject_select.php");
+            exit();
+        }
+
+        $subject_data = $this->model->getSubjectData($s_id);
+        if($subject_data === 0)
+        {
+            $subjects           = $this->model->getSubjects();     
+            require_once("views/subject_select.php");
+            exit();            
+        }
+   
+        if(!$edit)
+        {
+            $subject_data       = $subject_data->fetch_assoc();  
+            $s_name             = $subject_data['s_name'];   
+            $s_active           = $subject_data['s_active'];
+            require_once("views/subject_edit.php");
+            exit();            
+        } else {
+            $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
+            $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';            
+        }
+
+        if(!$s_name)
+        {
+            $this->help->error[] = 'Не указано название предмета';    
+        }
+        
+
+        if($this->help->error)
+        {
+            require_once("views/subject_edit.php");
+            exit();
+        }
+
+        if($this->model->editSubject($s_id, $s_name, $s_active))
+        {
+            require_once("views/subject_edit_success.php");
+            exit();            
+        } else {
+            require_once("views/subject_edit_error.php");
+            exit();            
+        }
+        
+    }
+
+
 
     private function teacherTimeTable($t_id, $num_day)
     {

@@ -114,6 +114,54 @@ class MainModel
         return $result;        
     }
 
+    function addSubject($s_name, $s_active)
+    {
+        $s_name                 = $this->mysql->real_escape_string($s_name);
+        $s_active               = $this->mysql->real_escape_string($s_active);
+        $query                  = "INSERT INTO `subjects`(`s_name`, `s_active`) VALUES ('".$s_name."','".$s_active."')";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
 
+    function checkSubjectName($s_name)
+    {
+        $s_name                 = $this->mysql->real_escape_string($s_name);
+        $query                  = "SELECT * FROM `subjects` WHERE `s_name` = '".$s_name."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function checkSubjectId($s_id)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_name);
+        $query                  = "SELECT * FROM `subjects` WHERE `s_id` = '".$s_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getSubjects()
+    {
+        $query                  = "SELECT * FROM `subjects` ORDER BY `s_name` ASC";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getSubjectData($s_id)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_id);
+        $query                  = "SELECT * FROM `subjects` WHERE `s_id` = '".$s_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+    
+    function editSubject($s_id, $s_name, $s_active)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_id);
+        $s_name                 = $this->mysql->real_escape_string($s_name);
+        $s_active               = $this->mysql->real_escape_string($s_active);
+        $query                  = "UPDATE `subjects` SET `s_name`= '".$s_name."',`s_active` = '".$s_active."' WHERE `s_id` = '".$s_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
 }
 ?>
