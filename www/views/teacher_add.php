@@ -49,7 +49,7 @@ require_once('header.php');
                   <textarea class="form-control" id="t_comment" name="t_comment"  rows="5"><?=$t_comment?></textarea>
                 </div>
             </div>
-
+            <?=$this->teacherSubjectTable()?>
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_active">Активен</label>  
                 <div class="col-md-1">

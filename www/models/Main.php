@@ -30,7 +30,7 @@ class MainModel
         $t_active 	    = $this->mysql->real_escape_string($t_active);
         $query          = "INSERT INTO `teachers`(`t_first_name`, `t_second_name`, `t_third_name`, `t_phone`, `t_email`, `t_comment`, `t_active`) VALUES ('".$t_first_name."', '".$t_second_name."', '".$t_third_name."', '".$t_phone."', '".$t_email."', '".$t_comment."', '".$t_active."')";
         $result         = $this->mysql->query($query);
-        return $result;	
+        return $this->mysql->insert_id;	
 	}
 
     function getTeachers()
@@ -163,5 +163,22 @@ class MainModel
         $result                 = $this->mysql->query($query);
         return $result;
     }
+
+    function addTeacherSubject($s_id, $t_id)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_id);
+        $t_id                   = $this->mysql->real_escape_string($t_id);
+        $query                  = "INSERT INTO `teachers_subject`(`ts_subject_id`, `ts_teacher_id`) VALUES ('".$s_id."', '".$t_id."')";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function delTeacherSubject($t_id)
+    {
+        $t_id                   = $this->mysql->real_escape_string($t_id);
+        $query                  = "DELETE FROM `teachers_subject` WHERE `ts_teacher_id` = '".$t_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }    
 }
 ?>

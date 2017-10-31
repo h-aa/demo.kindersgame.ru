@@ -117,9 +117,19 @@ class MainController
             require_once("views/teacher_add.php");
             exit();
         }
-
-        if($this->model->addTeacher($t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active))
+        $t_id = $this->model->addTeacher($t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active);
+        if($t_id)
         {
+            if($_POST['subject'])
+            {
+                foreach($_POST['subject'] as $val)
+                {
+                    if($this->model->checkSubjectId($val))
+                    {
+                        $this->model->addTeacherSubject($val, $t_id);
+                    }    
+                }
+            }
             require_once("views/teacher_add_success.php");
             exit();            
         } else {
@@ -406,6 +416,16 @@ class MainController
             return false;
         }
         require("views/teacher_time_table.php");
+    }
+
+    private function teacherSubjectTable()
+    {
+        $subject_data       = $this->model->getSubjects();
+        if($subject_data === 0)
+        {
+            return false;
+        }
+        require_once("views/teacher_subject_table.php");
     }
 }
 ?>
