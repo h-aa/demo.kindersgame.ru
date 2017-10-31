@@ -239,11 +239,13 @@ class MainController
             exit();          
         }
 
-        $teacher_time_data  = $this->model->getTeacherTimeData($t_id);
-        $time_data          = $teacher_time_data->num_rows > 0 ? $teacher_time_data->fetch_assoc() : '';
-        if($_POST['time_data'])
+        if($_POST['edit'])
         {
             $this->model->delTeacherTimeData($t_id);
+        }
+
+        if($_POST['time_data'])
+        {
             foreach($_POST['time_data'] as $a=>$b)
             {
                 
@@ -281,9 +283,23 @@ class MainController
                 }
             }
         }
-
-            require_once("views/teacher_time.php");
+        require_once("views/teacher_time.php");
        
+    }
+
+    public function subject_add()
+    {
+        require_once("views/subject_add.php");
+    }
+
+    private function teacherTimeTable($t_id, $num_day)
+    {
+        $teacher_time_data  = $this->model->getTeacherTimeData($t_id, $num_day);
+        if($teacher_time_data->num_rows === 0)
+        {
+            return false;
+        }
+        require("views/teacher_time_table.php");
     }
 }
 ?>

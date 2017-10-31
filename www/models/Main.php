@@ -63,10 +63,11 @@ class MainModel
         return $result;
     }
 
-    function getTeacherTimeData($t_id)
+    function getTeacherTimeData($t_id, $num_day)
     {
         $t_id           = $this->mysql->real_escape_string($t_id);
-        $query          = "SELECT * FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."'";
+        $num_day           = $this->mysql->real_escape_string($num_day);
+        $query          = "SELECT * FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."' AND `tt_day` = '".$num_day."'";
         $result         = $this->mysql->query($query);
         return $result;
     }

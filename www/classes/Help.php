@@ -41,4 +41,5 @@ class Help
         );
         return $day_name[$day];
     }
+
 }

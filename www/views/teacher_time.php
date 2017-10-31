@@ -14,8 +14,8 @@ require_once('header.php');
 <?php for($x=1;$x<=7;$x++){ ?>
 			<div class="row event"> <!-- мероприятие -->
 				<div class="col-md-3 time">
-					<span class="day"><?=$x?></span>
-					<span class="month"><?=$this->help->dayWeek($x)?></span>
+					<!--<span class="day"><?=$x?></span>-->
+					<span class="month"><b><?=$this->help->dayWeek($x)?></b></span>
                     <hr>
                     <button type="button" value="<?=$x?>" class="btn btn-primary btn-sm time_add_btn"><i class="fa fa-clock-o fa-lg"></i> Добавить время</button>
                     <hr>
@@ -26,6 +26,7 @@ require_once('header.php');
 					<tr>
 						<th>Время занятий (начало - конец):</th>
 					</tr>
+                    <?=$this->teacherTimeTable($t_id,$x)?>
 					</table>
                     
 				</div>
@@ -36,7 +37,7 @@ require_once('header.php');
             <div class="form-group">
               <label class="col-md-4 control-label" for="btn"></label>
               <div class="col-md-4">
-                <button type="submit" id="btn" class="btn btn-primary btn-block">Редактировать расписание преподавателя</button>
+                <button type="submit" id="btn" class="btn btn-primary btn-block btn-lg">Сохранить расписание преподавателя</button>
               </div>  
             </div>
           </fieldset>
@@ -62,7 +63,7 @@ $(".time_add_btn").click(function() {
         }        
         new_data   += '<option value="'+x+'">'+x+'</option>';
     }
-    new_data       += '</select> : ';
+    new_data       += '</select>:';
     new_data       += '<select name="time_data['+number_day+']['+time_in_table+'][tt_minut_start]">';
     for(x=0;x<60;x++){
         if(x<10){
