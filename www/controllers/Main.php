@@ -455,7 +455,7 @@ public function student_add()
         }
         if(!$st_date_birth)
         {
-            $this->help->error[] = 'Не указана рождения ученика';
+            $this->help->error[] = 'Не указана дата рождения ученика';
         }        
         if(!$st_parent_phone)
         {
@@ -483,7 +483,7 @@ public function student_add()
         }
     }
 
-    public function teacher_edit()
+    public function student_edit()
     {
         if(!$this->auth->isAdmin())
         {
@@ -491,88 +491,82 @@ public function student_add()
             exit();
         }
         
-        $this->help->action = 'teacher_edit';
+        $this->help->action = 'student_edit';
         
-        $t_id               = $_POST['t_id']            ? htmlspecialchars($_POST['t_id'])          : '';      
-        if(!$t_id)
+        $st_id               = $_POST['st_id']            ? htmlspecialchars($_POST['st_id'])          : '';      
+        if(!$st_id)
         {
-            $teachers = $this->model->getTeachers();
-            require_once('views/teacher_select.php');
+            $students = $this->model->getStudents();
+            require_once('views/student_select.php');
             exit();
         }
         
-        $teacher_data = $this->model->getTeacherData($t_id);
+        $student_data = $this->model->getStudentData($st_id);
         
-        if($teacher_data->num_rows === 0)
+        if($student_data->num_rows === 0)
         {   
             $this->auth->userLogout();
             header('Location: /');
             exit();          
         }
-        if($t_id && !$_POST['edit'])
+        if($st_id && !$_POST['edit'])
         {
-            $t_data = $teacher_data->fetch_assoc();
-            $t_first_name       = $t_data['t_first_name'];
-            $t_second_name      = $t_data['t_second_name'];
-            $t_third_name       = $t_data['t_third_name'];
-            $t_email            = $t_data['t_email'];
-            $t_phone            = $t_data['t_phone'];
-            $t_comment          = $t_data['t_comment'];
-            $t_active           = $t_data['t_active'];             
+            $st_data            = $student_data->fetch_assoc();
+            $st_first_name      = $st_data['st_first_name'];
+            $st_second_name     = $st_data['st_second_name'];
+            $st_third_name      = $st_data['st_third_name'];
+            $st_date_birth      = $st_data['st_date_birth'];
+            $st_parent_fio      = $st_data['st_parent_fio'];
+            $st_parent_phone    = $st_data['st_parent_phone'];
+            $st_comment         = $st_data['st_comment'];
+            $st_active          = $st_data['st_active'];             
         } else {
-            $t_first_name       = $_POST['t_first_name']    ? htmlspecialchars($_POST['t_first_name'])  : '';
-            $t_second_name      = $_POST['t_second_name']   ? htmlspecialchars($_POST['t_second_name']) : '';
-            $t_third_name       = $_POST['t_third_name']    ? htmlspecialchars($_POST['t_third_name'])  : '';
-            $t_email            = $_POST['t_email']         ? htmlspecialchars($_POST['t_email'])       : '';
-            $t_phone            = $_POST['t_phone']         ? htmlspecialchars($_POST['t_phone'])       : '';
-            $t_comment          = $_POST['t_comment']       ? htmlspecialchars($_POST['t_comment'])     : '';
-            $t_active           = $_POST['t_active']        ? htmlspecialchars($_POST['t_active'])      : '';  
+            $st_first_name      = $_POST['st_first_name']    ? htmlspecialchars($_POST['st_first_name'])  : '';
+            $st_second_name     = $_POST['st_second_name']   ? htmlspecialchars($_POST['st_second_name']) : '';
+            $st_third_name      = $_POST['st_third_name']    ? htmlspecialchars($_POST['st_third_name'])  : '';
+            $st_date_birth      = $_POST['st_date_birth']    ? htmlspecialchars($_POST['st_date_birth'])  : '';
+            $st_parent_fio      = $_POST['st_parent_fio']    ? htmlspecialchars($_POST['st_parent_fio'])  : '';
+            $st_parent_phone    = $_POST['st_parent_phone']  ? htmlspecialchars($_POST['st_parent_phone']): '';
+            $st_comment         = $_POST['st_comment']       ? htmlspecialchars($_POST['st_comment'])     : '';
+            $st_active          = $_POST['st_active']        ? htmlspecialchars($_POST['st_active'])      : '';  
         }
 
 
-        if(!$t_first_name)
+        if(!$st_first_name)
         {
-            $this->help->error[] = 'Не указано имя преподавателя';
+            $this->help->error[] = 'Не указано имя ученика';
         }
-        if(!$t_second_name)
+        if(!$st_second_name)
         {
-            $this->help->error[] = 'Не указана фамилия преподавателя';
+            $this->help->error[] = 'Не указана фамилия ученика';
+        }
+        if(!$st_date_birth)
+        {
+            $this->help->error[] = 'Не указана дата рождения ученика';
+        }        
+        if(!$st_parent_phone)
+        {
+            $this->help->error[] = 'Не указан телефон родителя';
         }
 
-        if($t_email && !filter_var($t_email, FILTER_VALIDATE_EMAIL))
+        if($this->help->error || !$_POST['edit'])
         {
-            $this->help->error[] = 'Неверный формат Email';
-        }
-
-        if($this->help->error)
-        {
-            require_once("views/teacher_edit.php");
+            require_once("views/student_edit.php");
             exit();
         }
         
-        if(!$_POST['edit'])
-        {
-            require_once("views/teacher_edit.php");
-            exit();
-        }
+        // if(!$_POST['edit'])
+        // {
+        //     require_once("views/student_edit.php");
+        //     exit();
+        // }
 
-        if($this->model->editTeacherData($t_id, $t_first_name, $t_second_name, $t_third_name, $t_email, $t_phone, $t_comment, $t_active))
-        {
-            if($_POST['subject'])
-            {
-                $this->model->delTeacherSubject($t_id);
-                foreach($_POST['subject'] as $val)
-                {
-                    if($this->model->checkSubjectId($val))
-                    {
-                        $this->model->addTeacherSubject($val, $t_id);
-                    }    
-                }
-            }            
-            require_once("views/teacher_edit_success.php");
+        if($this->model->editStudentData($st_id, $st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active))
+        {            
+            require_once("views/student_edit_success.php");
             exit();
         } else {
-            require_once("views/teacher_edit_error.php");
+            require_once("views/student_edit_error.php");
             exit();            
         }
     }

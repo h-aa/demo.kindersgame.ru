@@ -239,5 +239,49 @@ class MainModel
         $result                 = $this->mysql->query($query);
         return $result;	
 	}
+
+    function getStudents()
+    {
+        $query                  = "SELECT * FROM `students`";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function getStudentData($st_id)
+    {
+        $st_id                  = $this->mysql->real_escape_string($st_id);
+        $query                  = "SELECT * FROM `students` WHERE `st_id` = '".$st_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function editStudentData($st_id, $st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active)
+    {
+		$st_id 	                = $this->mysql->real_escape_string($st_id);
+        $st_first_name 	        = $this->mysql->real_escape_string($st_first_name);
+        $st_second_name 	    = $this->mysql->real_escape_string($st_second_name);
+        $st_third_name 	        = $this->mysql->real_escape_string($st_third_name);
+        $st_date_birth 	        = $this->mysql->real_escape_string($st_date_birth);
+        $st_parent_fio 	        = $this->mysql->real_escape_string($st_parent_fio);
+        $st_parent_phone 	    = $this->mysql->real_escape_string($st_parent_phone);
+        $st_comment 	        = $this->mysql->real_escape_string($st_comment);
+        $st_active 	            = $this->mysql->real_escape_string($st_active);
+        $query                  = "UPDATE 
+                                `students` 
+                                SET 
+                                `st_first_name`     ='".$st_first_name."',
+                                `st_second_name`    ='".$st_second_name."',
+                                `st_third_name`     ='".$st_third_name."',
+                                `st_date_birth`     ='".$st_date_birth."',
+                                `st_parent_fio`     ='".$st_parent_fio."',
+                                `st_parent_phone`   ='".$st_parent_phone."',
+                                `st_comment`        ='".$st_comment."',
+                                `st_active`         ='".$st_active."' 
+                                WHERE
+                                `st_id`              = '".$st_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;                
+    }
+
 }
 ?>
