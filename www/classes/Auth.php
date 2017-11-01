@@ -11,14 +11,14 @@ class Auth
 	private $mysql;
 	function __construct()
 	{
-		$mysqli 			              = new mysqli(DBHOST, DBUSER, DBPASS, DBBASE);
+		$mysqli 			            = new mysqli(DBHOST, DBUSER, DBPASS, DBBASE);
 		if($mysqli->connect_errno)
 		{
 			echo "Ошибка: " . $mysqli->connect_error . "\n";
 			exit();
 		}
 		$mysqli->set_charset("utf8");
-		$this->mysql                = $mysqli;		
+		$this->mysql                    = $mysqli;		
 	}
 	public function userLogout()
 	{
@@ -47,7 +47,7 @@ class Auth
 	{
 		if(isset($_SESSION['is_login']))
 		{
-			$this->is_login           = true;
+			$this->is_login             = true;
 		}
 		return $this->is_login;
 	}
@@ -59,22 +59,22 @@ class Auth
 			return $this->is_admin;
 			exit();
 		}
-		$query				              = "SELECT * FROM `admins` WHERE `user_id` = '".$_SESSION['user_id']."'";
-		$result 			              = $this->mysql->query($query);
+		$query				            = "SELECT * FROM `admins` WHERE `user_id` = '".$_SESSION['user_id']."'";
+		$result 			            = $this->mysql->query($query);
 		if($result->num_rows > 0)
 		{
-			$this->is_admin               = true;
+			$this->is_admin             = true;
 		}
 		return $this->is_admin;
 	}
 
 	public function userRights($user_right, $user_id = false)
 	{
-		$user_id				            = $user_id ? $user_id : $_SESSION['user_id'];
-		$user_id 			                = $this->mysql->real_escape_string($user_id);
-		$user_right				            = $this->mysql->real_escape_string($user_right);
-		$query				                = "SELECT * FROM `rights` WHERE `user_id` = '".$user_id."' AND `user_right` = '".$user_right."'";
-		$result				                = $this->mysql->query($query);
+		$user_id				        = $user_id ? $user_id : $_SESSION['user_id'];
+		$user_id 			            = $this->mysql->real_escape_string($user_id);
+		$user_right				        = $this->mysql->real_escape_string($user_right);
+		$query				            = "SELECT * FROM `rights` WHERE `user_id` = '".$user_id."' AND `user_right` = '".$user_right."'";
+		$result				            = $this->mysql->query($query);
 		if($result->num_rows > 0)
 		{
 			return true;

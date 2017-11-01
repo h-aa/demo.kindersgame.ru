@@ -46,8 +46,8 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                     <li><a href="#">Удалить занятие</a></li>                                                                                                                                                                      
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Ученики</li>                                                                                 
-                    <li><a href="#">Добавить ученика</a></li>                                                                                     
-                    <li><a href="#">Редактировать ученика</a></li>
+                    <li <?=$this->help->urlActive('student_add')?>><a href="/student_add/">Добавить ученика</a></li>
+                    <li <?=$this->help->urlActive('student_edit')?>><a href="/student_edit/">Редактировать ученика</a></li>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Преподаватели</li>                                                                                 
                     <li <?=$this->help->urlActive('teacher_add')?>><a href="/teacher_add/">Добавить преподавателя</a></li>

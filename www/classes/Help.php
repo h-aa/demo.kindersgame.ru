@@ -1,9 +1,25 @@
 <?php
 class Help
 {	
-	public $action;
-    public $error = false;
-	public function urlActive($url)
+	public      $action;
+    public      $error      = false;
+    public      $message    = false;
+	// private     $mysql;
+
+	// function __construct()
+	// {
+	// 	$mysqli 		        = new mysqli(DBHOST, DBUSER, DBPASS, DBBASE);
+	// 	if($mysqli->connect_errno)
+	// 	{
+	// 		echo "Ошибка: " . $mysqli->connect_error . "\n";
+	// 		exit();
+	// 	}
+	// 	$mysqli->set_charset("utf8");
+	// 	$this->mysql 	        = $mysqli;
+
+	// }
+
+    public function urlActive($url)
 	{
 		if($this->action == $url)
 		{
@@ -21,10 +37,25 @@ class Help
             $error_data = '<ul>';
             foreach($this->error as $message)
             {
-                $error_data .= '<li>'.$message.'</li>';
+                $error_data .= '<span class="text-danger"><li>'.$message.'</span></li>';
             }
             $error_data .='</ul>';
             require_once('views/modal/error.php');
+        }
+    }
+
+
+    public function message()
+    {
+        if($this->message)
+        {   
+            $message_data = '<ul>';
+            foreach($this->message as $message)
+            {
+                $message_data .= '<li><span class="text-success">'.$message.'</span></li>';
+            }
+            $message_data .='</ul>';
+            require_once('views/modal/message.php');
         }
     }
 
@@ -41,5 +72,6 @@ class Help
         );
         return $day_name[$day];
     }
+
 
 }

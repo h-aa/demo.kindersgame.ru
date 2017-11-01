@@ -1,6 +1,9 @@
 <?php
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 require_once('header.php');
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
 ?>
 <data class="col-md-12">
       <div class="panel panel-default">
@@ -41,17 +44,17 @@ require_once('header.php');
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_phone">Контактный телефон*</label>  
                 <div class="col-md-4">
-                  <input id="t_phone" name="t_phone" value="<?=$t_phone?>" type="text" class="form-control input-md" required>
+                  <input id="t_phone" name="t_phone" value="<?=$t_phone?>" type="text" class="form-control input-md phone" required>
                 </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_comment">Прочая информация</label>  
                 <div class="col-md-4">
-                  <textarea class="form-control" id="t_comment" name="t_comment"  rows="5"><?=$t_comment?></textarea>
+                  <textarea class="form-control comment" id="t_comment" name="t_comment"  rows="5"><?=$t_comment?></textarea>
                 </div>
             </div>
-
+             <?=$this->teacherSubjectTable($t_id)?>
             <div class="form-group">
               <label class="col-md-4 control-label" for="t_active">Активен</label>  
                 <div class="col-md-1">

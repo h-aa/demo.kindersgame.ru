@@ -179,6 +179,65 @@ class MainModel
         $query                  = "DELETE FROM `teachers_subject` WHERE `ts_teacher_id` = '".$t_id."'";
         $result                 = $this->mysql->query($query);
         return $result;
-    }    
+    }
+
+    function checkTeacherSubject($t_id, $s_id)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_id);
+        $t_id                   = $this->mysql->real_escape_string($t_id);
+        $query                  = "SELECT * FROM `teachers_subject` WHERE `ts_teacher_id` = '".$t_id."' AND `ts_subject_id` = '".$s_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+	function addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active)
+	{
+		$st_first_name 	        = $this->mysql->real_escape_string($st_first_name);
+        $st_second_name 	    = $this->mysql->real_escape_string($st_second_name);
+        $st_third_name 	        = $this->mysql->real_escape_string($st_third_name);
+        $st_date_birth 	        = $this->mysql->real_escape_string($st_date_birth);
+        $st_parent_fio 	        = $this->mysql->real_escape_string($st_parent_fio);
+        $st_parent_phone 	    = $this->mysql->real_escape_string($st_parent_phone);
+        $st_comment 	        = $this->mysql->real_escape_string($st_comment);
+        $st_active 	            = $this->mysql->real_escape_string($st_active);
+        $query                  = "INSERT INTO `students`
+                                (
+                                    `st_first_name`, 
+                                    `st_second_name`, 
+                                    `st_third_name`, 
+                                    `st_date_birth`, 
+                                    `st_parent_fio`, 
+                                    `st_parent_phone`, 
+                                    `st_comment`, 
+                                    `st_active`
+                                ) 
+                                VALUES 
+                                (
+                                    '".$st_first_name."',
+                                    '".$st_second_name."',
+                                    '".$st_third_name."',
+                                    '".$st_date_birth."',
+                                    '".$st_parent_fio."',
+                                    '".$st_parent_phone."',
+                                    '".$st_comment."', 
+                                    '".$st_active."'
+                                )";
+        $result                 = $this->mysql->query($query);
+        return $this->mysql->insert_id;	
+	}
+
+	function checkStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth)
+	{
+		$st_first_name 	        = $this->mysql->real_escape_string($st_first_name);
+        $st_second_name 	    = $this->mysql->real_escape_string($st_second_name);
+        $st_third_name 	        = $this->mysql->real_escape_string($st_third_name);
+        $st_date_birth 	        = $this->mysql->real_escape_string($st_date_birth);
+        $query                  = "SELECT * FROM `students` WHERE `st_first_name` = '".$st_first_name."' 
+                                  AND `st_second_name` = '".$st_second_name."' 
+                                  AND `st_third_name` = '".$st_third_name."' 
+                                  AND `st_date_birth` = '".$st_date_birth."'";
+        $result                 = $this->mysql->query($query);
+        return $result;	
+	}
 }
 ?>

@@ -46,6 +46,7 @@ require_once('header.php');
     </div>		
     </div>        
 <?=$this->help->error()?>
+<?=$this->help->message()?>
 <?php
 require_once('footer.php');
 ?>
