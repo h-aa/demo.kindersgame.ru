@@ -16,8 +16,11 @@ class MainController
 
     public function schedule()
     {	
-	    $this->help->action = 'schedule';
-	    require_once("views/schedule.php");
+        $this->help->action = 'schedule';
+        $start_date = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
+        $end_date   = mktime(0, 0, 0, date("m")  , date("d")+7, date("Y"));
+        require_once('views/schedule.php');
+	    
     }
 
     public function login()

@@ -39,7 +39,14 @@ class MainModel
         $result         = $this->mysql->query($query);
         return $result;
     }
-	
+
+    function getTeachersActive()
+    {
+        $query          = "SELECT * FROM `teachers` WHERE `t_active` = 1 ORDER BY `t_second_name` ASC";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
     function getTeacherData($t_id)
     {
         $t_id           = $this->mysql->real_escape_string($t_id);
@@ -190,6 +197,18 @@ class MainModel
         return $result;        
     }
 
+    function getTeacherSubject($t_id)
+    {
+        $t_id                   = $this->mysql->real_escape_string($t_id);
+        $query                  = "SELECT * FROM `teachers_subject`,`subjects` 
+                                WHERE 
+                                ts_teacher_id = '".$t_id."' 
+                                AND ts_subject_id = s_id 
+                                AND s_active = 1";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
 	function addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active)
 	{
 		$st_first_name 	        = $this->mysql->real_escape_string($st_first_name);
@@ -283,5 +302,25 @@ class MainModel
         return $result;                
     }
 
+    function maxLessonsInDay($num_day){
+        $num_day                = $this->mysql->real_escape_string($num_day);
+        $query                  = "SELECT MAX(`count(*)`) as `num` FROM (SELECT count(*) FROM `teachers_time` WHERE `tt_day` = '".$num_day."' GROUP BY `tt_teacher_id`) AS T";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function teacherTimeLesson($tt_teacher_id, $tt_day, $offset)
+    {
+        $tt_teacher_id          = $this->mysql->real_escape_string($tt_teacher_id);
+        $tt_day                 = $this->mysql->real_escape_string($tt_day);
+        $offset                 = $this->mysql->real_escape_string($offset);
+        $query                  = "SELECT * FROM `teachers_time` 
+                                WHERE `tt_teacher_id` = '".$tt_teacher_id."' 
+                                AND `tt_day` = '".$tt_day."' 
+                                LIMIT 1 OFFSET ".$offset;
+        $result                 = $this->mysql->query($query);
+        return $result;
+        
+    }
 }
 ?>
