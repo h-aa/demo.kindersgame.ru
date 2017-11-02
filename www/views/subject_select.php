@@ -9,7 +9,7 @@ require_once('header.php');
         <form class="form-horizontal" method="post" id="subject_edit" action="/subject_edit">
           <fieldset>
             <div class="form-group">
-              <label class="col-md-4 control-label" for="t_id">Выберите предмет</label>  
+              <label class="col-md-4 control-label" for="s_id">Выберите предмет</label>  
                 <div class="col-md-4">
                     <select class="form-control" name="s_id" id="s_id" required="" title="Предмет">
                       <?php while($subject = $subjects->fetch_assoc()){?>

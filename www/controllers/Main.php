@@ -574,10 +574,70 @@ public function student_add()
         }
     }
 
+    public function lesson_add()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'lesson_add';
+        
+        $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
+        $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';
+        
+        if(!$_POST)
+        {
+            $students = $this->model->getStudents();
+            $subjects = $this->model->getSubjects();
+            require_once("views/lesson_add.php");
+            exit();
+        }
+        
+        if(!$s_name)
+        {
+            $this->help->error[] = 'Не указано название предмета';    
+        }
+        // $check_data = $this->model->checkSubjectName($s_name);
+        // if($check_data->num_rows > 0)
+        // {
+        //     $this->help->error[] = 'Предмет с таким названием был ранее добавлен';    
+        // }
 
+        if($this->help->error)
+        {
+            require_once("views/lesson_add.php");
+            exit();
+        }
 
+        if($this->model->addLesson($s_name, $s_active))
+        {
+            require_once("views/lesson_add_success.php");
+            exit();            
+        } else {
+            require_once("views/lesson_add_error.php");
+            exit();            
+        }
+        
+    }
+
+    //Обработка Ajax запросов
+
+    public function subject_teachers($s_id)
+    {
+        $s_id           = htmlspecialchars($s_id);
+        $teachers       = $this->model->getSubjectTeachers($s_id);
+        if($teachers->num_rows === 0)
+        {
+            return false;
+        } else {
+            require_once("views/subject_teachers_select.php");
+        }
+    }
 
     // Различные вспомогательные функции
+
     private function teacherTimeTable($t_id, $num_day)
     {
         $teacher_time_data  = $this->model->getTeacherTimeData($t_id, $num_day);
@@ -592,7 +652,7 @@ public function student_add()
     {
         $t_id = $t_id;
         $subject_data       = $this->model->getSubjects();
-        if($subject_data === 0)
+        if($subject_data->num_rows === 0)
         {
             return false;
         }

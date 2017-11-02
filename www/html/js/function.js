@@ -1,10 +1,10 @@
-function get_city_list(id){
+function get_subject_teachers(id){
 	var a = id;
-	//$('#city_data').html('');
+	$('#select3_data').html('');
 		$.ajax({
-			url: '/city/'+a,
+			url: '/subject_teachers/'+a,
 			success: function(data){
-				$('#city').html(data);
+				$('#select3_data').html(data);
 			}
 		});
 		return false;

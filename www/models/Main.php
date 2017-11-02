@@ -153,6 +153,14 @@ class MainModel
         return $result;
     }
 
+    function getSubjectTeachers($s_id)
+    {
+        $s_id                   = $this->mysql->real_escape_string($s_id);
+        $query                  = "SELECT * FROM `teachers_subject`,`teachers` where `ts_subject_id` = '".$s_id."' AND `ts_teacher_id` = `t_id`";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
     function getSubjectData($s_id)
     {
         $s_id                   = $this->mysql->real_escape_string($s_id);
@@ -208,6 +216,7 @@ class MainModel
         $result                 = $this->mysql->query($query);
         return $result;
     }
+
 
 	function addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active)
 	{
