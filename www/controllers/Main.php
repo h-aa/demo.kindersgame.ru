@@ -326,6 +326,7 @@ class MainController
         $this->help->action = 'subject_add';
         
         $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
+        $s_group            = $_POST['s_group']         ? htmlspecialchars($_POST['s_group'])       : '';
         $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';
         
         if(!$_POST)
@@ -350,7 +351,7 @@ class MainController
             exit();
         }
 
-        if($this->model->addSubject($s_name, $s_active))
+        if($this->model->addSubject($s_name, $s_group, $s_active))
         {
             require_once("views/subject_add_success.php");
             exit();            
@@ -392,12 +393,14 @@ class MainController
         if(!$edit)
         {
             $subject_data       = $subject_data->fetch_assoc();  
-            $s_name             = $subject_data['s_name'];   
+            $s_name             = $subject_data['s_name'];
+            $s_group            = $subject_data['s_group'];   
             $s_active           = $subject_data['s_active'];
             require_once("views/subject_edit.php");
             exit();            
         } else {
             $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
+            $s_group            = $_POST['s_group']         ? htmlspecialchars($_POST['s_group'])       : '';
             $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';            
         }
 
@@ -413,7 +416,7 @@ class MainController
             exit();
         }
 
-        if($this->model->editSubject($s_id, $s_name, $s_active))
+        if($this->model->editSubject($s_id, $s_name, $s_group, $s_active))
         {
             require_once("views/subject_edit_success.php");
             exit();            
@@ -630,10 +633,57 @@ public function student_add()
         $teachers       = $this->model->getSubjectTeachers($s_id);
         if($teachers->num_rows === 0)
         {
-            return false;
+            require_once("views/subject_teachers_select_empty.php");
         } else {
             require_once("views/subject_teachers_select.php");
         }
+    }
+
+    public function free_teacher_time_to_lesson()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            return false;
+        }
+        $l_st_id            =  $_POST['l_st_id']        ? htmlspecialchars($_POST['l_st_id'])       : '';
+        $l_s_id             =  $_POST['l_s_id']         ? htmlspecialchars($_POST['l_s_id'])        : '';
+        $l_t_id             =  $_POST['l_t_id']         ? htmlspecialchars($_POST['l_t_id'])        : '';
+        $l_date             =  $_POST['l_date']         ? htmlspecialchars($_POST['l_date'])        : '';
+        
+        if(!$l_st_id || !$l_s_id || !$l_t_id || !$l_date)
+        {
+            return false;
+        }
+        $num_day            = date("w", strtotime($l_date));
+        $num_day            = $num_day == 0 ? 7 : $num_day;
+
+        $student_data       = $this->model->getStudentData($l_st_id);
+        if($student_data->num_rows === 0)
+        {
+            return false;
+        }
+        $student_data       = $student_data->fetch_assoc();
+
+        $teacher_data       = $this->model->getTeacherData($l_t_id);
+        if($teacher_data->num_rows === 0)
+        {
+            return false;
+        }
+        $teacher_data       = $teacher_data->fetch_assoc();
+
+        $teacher_time_data  = $this->model->getTeacherTimeData($l_t_id, $num_day);
+        if($teacher_time_data->num_rows === 0)
+        {
+            return false;
+        }
+
+        $subject_data       = $this->model>getSubjectData($l_s_id);
+        if($subject_data === 0)
+        {
+            return false;
+        }
+        $subject_data       = $subject_data->fetch_assoc();
+
     }
 
     // Различные вспомогательные функции

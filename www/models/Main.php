@@ -121,11 +121,12 @@ class MainModel
         return $result;        
     }
 
-    function addSubject($s_name, $s_active)
+    function addSubject($s_name, $s_group, $s_active)
     {
         $s_name                 = $this->mysql->real_escape_string($s_name);
+        $s_group                = $this->mysql->real_escape_string($s_group);
         $s_active               = $this->mysql->real_escape_string($s_active);
-        $query                  = "INSERT INTO `subjects`(`s_name`, `s_active`) VALUES ('".$s_name."','".$s_active."')";
+        $query                  = "INSERT INTO `subjects`(`s_name`,`s_group`, `s_active`) VALUES ('".$s_name."','".$s_group."','".$s_active."')";
         $result                 = $this->mysql->query($query);
         return $result;
     }
@@ -169,12 +170,13 @@ class MainModel
         return $result;
     }
     
-    function editSubject($s_id, $s_name, $s_active)
+    function editSubject($s_id, $s_name, $s_group, $s_active)
     {
         $s_id                   = $this->mysql->real_escape_string($s_id);
         $s_name                 = $this->mysql->real_escape_string($s_name);
+        $s_group                = $this->mysql->real_escape_string($s_group);
         $s_active               = $this->mysql->real_escape_string($s_active);
-        $query                  = "UPDATE `subjects` SET `s_name`= '".$s_name."',`s_active` = '".$s_active."' WHERE `s_id` = '".$s_id."'";
+        $query                  = "UPDATE `subjects` SET `s_name`= '".$s_name."',`s_group`= '".$s_group."',`s_active` = '".$s_active."' WHERE `s_id` = '".$s_id."'";
         $result                 = $this->mysql->query($query);
         return $result;
     }
@@ -330,6 +332,11 @@ class MainModel
         $result                 = $this->mysql->query($query);
         return $result;
         
+    }
+
+    function getFreeTeacherTimeToLesson($l_st_id, $l_t_id, $l_t_id, $l_date)
+    {
+
     }
 }
 ?>

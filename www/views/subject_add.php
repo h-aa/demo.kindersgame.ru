@@ -16,6 +16,15 @@ require_once('header.php');
             </div>
 
             <div class="form-group">
+              <label class="col-md-4 control-label" for="s_group">Групповое занятие</label>  
+                <div class="col-md-1">
+                    <div class="checkbox">
+                        <input type="checkbox" id="s_group" name="s_group" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-md-4 control-label" for="s_active">Активен</label>  
                 <div class="col-md-1">
                     <div class="checkbox">

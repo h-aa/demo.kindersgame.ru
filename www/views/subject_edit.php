@@ -1,9 +1,6 @@
 <?php
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 require_once('header.php');
-// echo '<pre>';
-// print_r($_POST);
-// echo '</pre>';
 ?>
 <data class="col-md-12">
       <div class="panel panel-default">
@@ -19,7 +16,14 @@ require_once('header.php');
                   <input id="s_name" name="s_name" value="<?=$s_name?>" type="text" placeholder="" class="form-control input-md" required>
                 </div>
             </div>
-
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="s_group">Групповое занятие</label>  
+                <div class="col-md-1">
+                    <div class="checkbox">
+                        <input type="checkbox" id="s_group" name="s_group" value="1" <?=$s_group ? 'checked' : ''?>>
+                    </div>
+                </div>
+            </div>
             <div class="form-group">
               <label class="col-md-4 control-label" for="s_active">Активен</label>  
                 <div class="col-md-1">

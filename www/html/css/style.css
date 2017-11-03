@@ -66,13 +66,13 @@
 	color: rgb(108, 154, 120);
 }
 .calendar-text { margin-top: .3em; }
-.day {
+.daysc {
 	display: block;
 	font-size: 35pt;
 	font-weight: 100;
 	line-height: 1;
 }
-.month.  {
+.monthsc.  {
 	display: block;
 	font-size: 30pt;
 	font-weight: 900;
@@ -98,13 +98,13 @@
         color: rgb(255,255,255);
         background-color: rgb(108, 154, 120);
     }
-    .day {
+    .daysc {
         display: inline;
         font-size: 36pt;
         font-weight: 100;
         line-height: 1;
     }
-    .month.  {
+    .monthsc.  {
         display: inline;
         font-size: 32pt;
         font-weight: 900;

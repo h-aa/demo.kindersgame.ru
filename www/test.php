@@ -5,6 +5,6 @@
 // } else {
 //     echo 'Не истина';
 // }
-$today  = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
+$today  = date("w", strtotime("10.11.2017"));
 echo $today;
 ?>

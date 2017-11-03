@@ -33,8 +33,18 @@ require_once('header.php');
                 </div>
             </div>
 
-            <div id="select3_data" style="display:none"></div>
+        <div id="select3_data" style="display:none"></div>
 
+        <div id="select4_data" class="data1 data4" style="display:none">
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="l_date">Выберите дату</label>  
+                <div class="col-md-2">
+                  <input id="l_date" name="l_date" type="text" placeholder="дд.мм.гггг" class="form-control input-md date" readonly required>                                        
+                </div>
+            </div>
+        </div>
+        <div id="select5_data" >
+        </div>
             <div class="form-group data1 data2 data3 data4" id="select6" style="display:none">
               <label class="col-md-4 control-label" for="btn"></label>
               <div class="col-md-4">
@@ -52,6 +62,12 @@ require_once('header.php');
 require_once('footer.php');
 ?>
 <script type="text/javascript">
+   $('#l_date').datepicker({
+       language: 'ru',
+       startDate: '0d',
+       todayHighlight: true,
+       autoclose: true
+  });
   $(document).on("change", "#l_st_id", function(){
     var a = $(this).val();
     if(a == 0){
@@ -64,12 +80,26 @@ require_once('footer.php');
   $(document).on("change", "#l_s_id", function(){
     var a = $(this).val();
     if(a == 0){
-        $(".data2").slideUp(200);
+        $(".data2, .data3, .data4").slideUp(200);
         $("#select3_data").slideUp(200);
         $("#select3_data").html('');
     } else {
         get_subject_teachers(a);
         $("#select3_data").slideDown(200);
+        $(".data4").slideUp(200);
     }
-  });  
+  });
+
+  $(document).on("change", "#l_t_id", function(){
+    var a = $(this).val();
+    if(a == 0){
+        $("#select4_data").slideUp(200);
+    } else {
+        $("#select4_data").slideDown(200);
+    }
+  });
+
+  $(document).on("change", "#l_date", function(){
+    get_teacher_time_to_lesson();
+  });    
 </script>

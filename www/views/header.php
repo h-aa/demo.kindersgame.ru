@@ -8,7 +8,8 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/html/css/bootstrap.css?v=<?=mktime()?>" rel="stylesheet">
-     <link href="/html/css/font-awesome.css?v=<?=mktime()?>" rel="stylesheet">
+    <link href="/html/css/bootstrap-datepicker.min.css?v=<?=mktime()?>" rel="stylesheet">
+    <link href="/html/css/font-awesome.css?v=<?=mktime()?>" rel="stylesheet">
     <link href="/html/css/style.css?v=<?=mktime()?>" rel="stylesheet">
     <link href="https://kindersgame.ru/image/catalog/zastavkaumkrugsmol.jpg" rel="icon" />    
 

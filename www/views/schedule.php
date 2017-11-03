@@ -22,8 +22,8 @@ require_once('views/header.php');
             <?=$day_of_week == 1 ? '<hr>' : ''?>
 			<div class="row event"> <!-- мероприятие -->
 				<div class="col-md-2 time">
-					<span class="day"><?=$date?></span>
-					<span class="month"><?=$day_of_week?></span>
+					<span class="daysc"><?=$date?></span>
+					<span class="monthsc"><?=$day_of_week?></span>
 				</div>
 				<div class="col-md-10">
 					<h3><!--Расписание занятий--></h3>
