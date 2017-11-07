@@ -73,8 +73,30 @@ class MainModel
     function getTeacherTimeData($t_id, $num_day)
     {
         $t_id           = $this->mysql->real_escape_string($t_id);
-        $num_day           = $this->mysql->real_escape_string($num_day);
+        $num_day        = $this->mysql->real_escape_string($num_day);
         $query          = "SELECT * FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."' AND `tt_day` = '".$num_day."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getTeacherTimeDataActive($t_id, $num_day)
+    {
+        $t_id           = $this->mysql->real_escape_string($t_id);
+        $num_day        = $this->mysql->real_escape_string($num_day);
+        $query          = "SELECT * FROM `teachers_time` WHERE `tt_teacher_id` = '".$t_id."' AND `tt_day` = '".$num_day."' AND `tt_active` = 1";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getTimeData($tt_time_id, $tt_teacher_id = false)
+    {
+        $tt_time_id     =  $this->mysql->real_escape_string($tt_time_id);
+        $query          = "SELECT * FROM `teachers_time` WHERE `tt_time_id` = '".$tt_time_id."'";
+        if($tt_teacher_id)
+        {
+            $tt_teacher_id = $this->mysql->real_escape_string($tt_teacher_id);
+            $query     .= " AND `tt_teacher_id` = '".$tt_teacher_id."'";
+        }
         $result         = $this->mysql->query($query);
         return $result;
     }
@@ -334,9 +356,77 @@ class MainModel
         
     }
 
-    function getFreeTeacherTimeToLesson($l_st_id, $l_t_id, $l_t_id, $l_date)
+    function checkLessonOnSchedule($l_t_id, $l_date, $l_tt_hour_start, $l_tt_hour_end, $l_tt_minut_start, $l_tt_minut_end, $l_st_id = false)
     {
-
+        $l_t_id                 = $this->mysql->real_escape_string($l_t_id);
+        $l_date                 = $this->mysql->real_escape_string($l_date);
+        $l_tt_hour_start        = $this->mysql->real_escape_string($l_tt_hour_start);
+        $l_tt_hour_end          = $this->mysql->real_escape_string($l_tt_hour_end);
+        $l_tt_minut_start       = $this->mysql->real_escape_string($l_tt_minut_start);
+        $l_tt_minut_end         = $this->mysql->real_escape_string($l_tt_minut_end);
+        $query                  = "SELECT * FROM `lessons` 
+                                WHERE `l_t_id`          = '".$l_t_id."'
+                                AND `l_date`            = '".$l_date."'
+                                AND `l_tt_hour_start`   = '".$l_tt_hour_start."'
+                                AND `l_tt_hour_end`     = '".$l_tt_hour_end."'
+                                AND `l_tt_minut_start`  = '".$l_tt_minut_start."'
+                                AND `l_tt_minut_end`    = '".$l_tt_minut_end."'";
+        if($l_st_id)
+        {
+            $l_st_id            = $this->mysql->real_escape_string($l_st_id);
+            $query             .=" AND `l_st_id` = '".$l_st_id."'";
+        }
+        $result                 = $this->mysql->query($query);
+        return $result;
     }
+
+    function addLesson($l_user_id, $l_st_id, $l_s_id, $l_t_id, $l_date, $l_tt_id, $l_tt_hour_start, $l_tt_minut_start, $l_tt_hour_end, $l_tt_minut_end, $l_unix_time_start, $l_unix_time_end)
+    {
+        $l_user_id              = $this->mysql->real_escape_string($_SESSION['user_id']);
+        $l_st_id                = $this->mysql->real_escape_string($l_st_id);
+        $l_s_id                 = $this->mysql->real_escape_string($l_s_id);
+        $l_t_id                 = $this->mysql->real_escape_string($l_t_id);
+        $l_date                 = $this->mysql->real_escape_string($l_date);
+        $l_tt_id                = $this->mysql->real_escape_string($l_tt_id);
+        $l_tt_hour_start        = $this->mysql->real_escape_string($l_tt_hour_start);
+        $l_tt_minut_start       = $this->mysql->real_escape_string($l_tt_minut_start);
+        $l_tt_hour_end          = $this->mysql->real_escape_string($l_tt_hour_end);
+        $l_tt_minut_end         = $this->mysql->real_escape_string($l_tt_minut_end);
+        $l_unix_time_start      = $this->mysql->real_escape_string($l_unix_time_start);
+        $l_unix_time_end        = $this->mysql->real_escape_string($l_unix_time_end);
+        $l_unix_time_create     = $this->mysql->real_escape_string(strtotime("now"));
+        $query                  = "INSERT INTO `lessons`(
+                                        `l_user_id`,
+                                        `l_st_id`, 
+                                        `l_s_id`, 
+                                        `l_t_id`, 
+                                        `l_date`, 
+                                        `l_tt_id`, 
+                                        `l_tt_hour_start`, 
+                                        `l_tt_minut_start`, 
+                                        `l_tt_hour_end`, 
+                                        `l_tt_minut_end`, 
+                                        `l_unix_time_start`,
+                                        `l_unix_time_end`,
+                                        `l_unix_time_create`
+                                    ) VALUES (
+                                        '".$l_user_id."',
+                                        '".$l_st_id."',
+                                        '".$l_s_id."',
+                                        '".$l_t_id."',
+                                        '".$l_date."',
+                                        '".$l_tt_id."',
+                                        '".$l_tt_hour_start."',
+                                        '".$l_tt_minut_start."',
+                                        '".$l_tt_hour_end."',
+                                        '".$l_tt_minut_end."',
+                                        '".$l_unix_time_start."',
+                                        '".$l_unix_time_end."',
+                                        '".$l_unix_time_create."'
+                                    )";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
 }
 ?>

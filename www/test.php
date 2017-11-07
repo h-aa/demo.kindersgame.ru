@@ -5,6 +5,6 @@
 // } else {
 //     echo 'Не истина';
 // }
-$today  = date("w", strtotime("10.11.2017"));
+$today  = strtotime("now");
 echo $today;
 ?>

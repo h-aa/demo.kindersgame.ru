@@ -561,12 +561,6 @@ public function student_add()
             exit();
         }
         
-        // if(!$_POST['edit'])
-        // {
-        //     require_once("views/student_edit.php");
-        //     exit();
-        // }
-
         if($this->model->editStudentData($st_id, $st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active))
         {            
             require_once("views/student_edit_success.php");
@@ -587,40 +581,161 @@ public function student_add()
         
         $this->help->action = 'lesson_add';
         
-        $s_name             = $_POST['s_name']          ? htmlspecialchars($_POST['s_name'])        : '';
-        $s_active           = $_POST['s_active']        ? htmlspecialchars($_POST['s_active'])      : '';
-        
+        $l_st_id            = $_POST['l_st_id']             ? htmlspecialchars($_POST['l_st_id'])       : '';
+        $l_s_id             = $_POST['l_s_id']              ? htmlspecialchars($_POST['l_s_id'])        : '';
+        $l_t_id             = $_POST['l_t_id']              ? htmlspecialchars($_POST['l_t_id'])        : '';
+        $l_date             = $_POST['l_date']              ? htmlspecialchars($_POST['l_date'])        : '';
+        $l_tt_id            = $_POST['l_tt_id']             ? $_POST['l_tt_id']                         : '';
+        $students = $this->model->getStudents();
+        $subjects = $this->model->getSubjects();        
         if(!$_POST)
         {
-            $students = $this->model->getStudents();
-            $subjects = $this->model->getSubjects();
             require_once("views/lesson_add.php");
             exit();
         }
         
-        if(!$s_name)
-        {
-            $this->help->error[] = 'Не указано название предмета';    
-        }
-        // $check_data = $this->model->checkSubjectName($s_name);
-        // if($check_data->num_rows > 0)
-        // {
-        //     $this->help->error[] = 'Предмет с таким названием был ранее добавлен';    
-        // }
+        // echo '<pre>';
+        // print_r($_POST);
+        // echo '</pre>';
+        // exit();
 
+        if(!$l_st_id)
+        {
+            $this->help->error[]        = 'Не выбран ученик';    
+        }
+        if($l_st_id)
+        {
+            $student_data = $this->model->getStudentData($l_st_id);
+            if($student_data->num_rows === 0)
+            {
+                $this->help->error[]    = 'Не верный id ученика';
+            }
+        }
+
+        if(!$l_s_id)
+        {
+            $this->help->error[]        = 'Не выбран предмет';
+        }
+        if($l_s_id)
+        {
+            $subject_data = $this->model->getSubjectData($l_s_id);
+            if($subject_data->num_rows === 0)
+            {
+                $this->help->error[]    = 'Не верный id предмета';
+                goto error;
+            }              
+        }
+
+        if(!$l_t_id)
+        {
+            $this->help->error[]        = 'Не выбран преподаватель';
+            goto error;
+        }
+        if($l_t_id)
+        {
+            $teacher_data = $this->model->getTeacherData($l_t_id);
+            if($teacher_data->num_rows === 0)
+            {
+                $this->help->error[]    = 'Не верный id преподавателя';
+                goto error;
+            }
+        }
+
+        if(!$l_date)
+        {
+            $this->help->error[]        = 'Не указана дата занятия';
+            goto error;
+        }
+        if($l_date)
+        {
+            $today = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
+            $l_date_unixtime = strtotime($l_date);
+            if($l_date_unixtime < $today)
+            {
+               $this->help->error[]        = 'Запрещено добавлять занятия на прошедшую дату';
+               goto error;
+            }
+            $num_day = date("w", strtotime($l_date));
+            $num_day = $num_day == 0 ? 1 : $num_day;
+            $check_teacher_time = $this->model->getTeacherTimeDataActive($l_t_id, $num_day);
+            if($check_teacher_time->num_rows === 0)
+            {
+                $this->help->error[]        = 'На выбранную дату отсутствует время в расписание преподавателя';
+                goto error; 
+            }            
+        }
+
+        if(!$l_tt_id)
+        {
+            $this->help->error[]            = 'Не указано время занятия';
+            goto error;   
+        }
+        if($l_tt_id)
+        {
+            if(!is_array($l_tt_id))
+            {
+                $this->help->error[]        = 'Не верный формат времени занятий';
+            } else {
+                foreach($l_tt_id as $time_id)
+                {
+                   $time_data = $this->model->getTimeData($time_id);
+                   if($time_data->num_rows === 0)
+                   {
+                        $this->help->error[] = 'Не верный id времени занятия';
+                   } else {
+                        $time_data = $time_data->fetch_assoc();
+                        $unix_time_start = strtotime($l_date.' '.$time_data['tt_hour_start'].':'.$time_data['tt_minut_start']);
+                        if(strtotime("now")> $unix_time_start)
+                        {
+                           $this->help->error[] = 'Занятие не может быть добавлено для прошедшего времени'; 
+                        }
+                   }
+                   
+                   $check_lesson_on_schedule = $this->model->checkLessonOnSchedule($l_t_id, $l_date, $time_data['tt_hour_start'], $time_data['tt_hour_end'], $time_data['tt_minut_start'], $time_data['tt_minut_end'], $l_st_id);
+                   if($check_lesson_on_schedule->num_rows > 0)
+                   {
+                       $this->help->error[] = 'Попытка повторного добавления данных занятия для выбранного ученика.';
+                   }
+
+                   $s_data = $subject_data->fetch_assoc();
+                   if($s_data['s_group'] == 0)
+                   {
+                       $check_lesson_on_schedule = $this->model->checkLessonOnSchedule($l_t_id, $l_date, $time_data['tt_hour_start'], $time_data['tt_hour_end'], $time_data['tt_minut_start'], $time_data['tt_minut_end']);
+                       if(!$check_lesson_on_schedule->num_rows === 0)
+                       {
+                           $this->help->error[] = 'Данное занятие не является групповым и добавление нескольких учеников на одно время запрещенно';
+                       }
+                   }
+                }
+
+            }
+        }
+
+        error:
         if($this->help->error)
         {
             require_once("views/lesson_add.php");
             exit();
         }
 
-        if($this->model->addLesson($s_name, $s_active))
+        foreach($l_tt_id as $val)
         {
-            require_once("views/lesson_add_success.php");
-            exit();            
+            $time_data          = '';
+            $tt_data          = $this->model->getTimeData($val);
+            $time_data          = $tt_data->fetch_assoc();         
+            $unix_time_start    = strtotime($l_date.' '.$time_data['tt_hour_start'].':'.$time_data['tt_minut_start']);
+            $unix_time_end      = strtotime($l_date.' '.$time_data['tt_hour_end'].':'.$time_data['tt_minut_end']);
+            if(!$this->model->addLesson($_SESSION['user_id'], $l_st_id, $l_s_id, $l_t_id, $l_date, $val, $time_data['tt_hour_start'], $time_data['tt_minut_start'], $time_data['tt_hour_end'], $time_data['tt_minut_end'], $unix_time_start, $unix_time_end))
+            {
+                $this->help->error[] = 'Произошла ошибка при добавление времени '.sprintf('%02d', $time_data['tt_hour_start']).':'.sprintf('%02d', $time_data['tt_minut_start']).' - '.sprintf('%02d', $time_data['tt_hour_end']).':'.sprintf('%02d', $time_data['tt_minut_end']);
+            }
+        }
+        if($this->help->error)
+        {
+            goto error;
         } else {
-            require_once("views/lesson_add_error.php");
-            exit();            
+            require_once("views/lesson_add_success.php");
+            exit();        
         }
         
     }
@@ -662,28 +777,48 @@ public function student_add()
         {
             return false;
         }
-        $student_data       = $student_data->fetch_assoc();
+
 
         $teacher_data       = $this->model->getTeacherData($l_t_id);
         if($teacher_data->num_rows === 0)
         {
             return false;
         }
-        $teacher_data       = $teacher_data->fetch_assoc();
 
-        $teacher_time_data  = $this->model->getTeacherTimeData($l_t_id, $num_day);
+
+        $teacher_time_data  = $this->model->getTeacherTimeDataActive($l_t_id, $num_day);
         if($teacher_time_data->num_rows === 0)
         {
-            return false;
+            require_once('views/lesson_time_select_empty.php');
+            exit();
         }
 
-        $subject_data       = $this->model>getSubjectData($l_s_id);
+        $subject_data       = $this->model->getSubjectData($l_s_id);
         if($subject_data === 0)
         {
             return false;
         }
         $subject_data       = $subject_data->fetch_assoc();
+        
+        if($subject_data['s_group'] == '1')
+        {
+            require_once('views/lesson_time_select.php');
+            exit();
+        }
 
+        $free_time= '';
+        while($row = $teacher_time_data->fetch_assoc())
+        {
+            $check_lesson = $this->model->checkLessonOnSchedule($l_t_id, $l_date, $row['tt_hour_start'], $row['tt_hour_end'], $row['tt_minut_start'], $row['tt_minut_end']);
+            if($check_lesson->num_rows === 0)
+            {
+                $free_time[] = $row;
+            }
+        }
+        require_once('views/lesson_time_select_free.php');
+        exit();        
+
+        
     }
 
     // Различные вспомогательные функции

@@ -43,9 +43,8 @@ require_once('header.php');
                 </div>
             </div>
         </div>
-        <div id="select5_data" >
-        </div>
-            <div class="form-group data1 data2 data3 data4" id="select6" style="display:none">
+        <div id="select5_data" class="data1 data5"></div>
+            <div class="form-group data1 data2 data3 data4 data5" id="select6" style="display:none">
               <label class="col-md-4 control-label" for="btn"></label>
               <div class="col-md-4">
                 <button type="submit" id="btn" class="btn btn-primary btn-block">Добавить занятие в расписание</button>
@@ -58,6 +57,7 @@ require_once('header.php');
     </div>		
     </data>        
 <?=$this->help->error()?>
+<?=$this->help->message()?>
 <?php
 require_once('footer.php');
 ?>
@@ -79,18 +79,20 @@ require_once('footer.php');
 
   $(document).on("change", "#l_s_id", function(){
     var a = $(this).val();
+    $("#l_date").val('');
     if(a == 0){
-        $(".data2, .data3, .data4").slideUp(200);
+        $(".data2, .data3, .data4, .data5").slideUp(200);
         $("#select3_data").slideUp(200);
         $("#select3_data").html('');
     } else {
         get_subject_teachers(a);
         $("#select3_data").slideDown(200);
-        $(".data4").slideUp(200);
+        $(".data4, .data5").slideUp(200);
     }
   });
 
   $(document).on("change", "#l_t_id", function(){
+    $("#l_date").val('');
     var a = $(this).val();
     if(a == 0){
         $("#select4_data").slideUp(200);
@@ -100,6 +102,16 @@ require_once('footer.php');
   });
 
   $(document).on("change", "#l_date", function(){
+    $("#select6").slideUp();
     get_teacher_time_to_lesson();
-  });    
+    $("#select5_data").slideDown();
+  });
+
+  $(document).on("change", ".time_checked", function(){
+    if ($(".time_checked").is(':checked')){
+        $("#select6").slideDown(100);
+    }else {
+        $("#select6").slideUp(100);
+    }    
+  });   
 </script>
