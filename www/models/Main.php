@@ -428,5 +428,53 @@ class MainModel
         return $result;
     }
 
+    function getDataLesson($l_t_id, $l_date, $l_tt_hour_start, $l_tt_hour_end, $l_tt_minut_start, $l_tt_minut_end)
+    {
+        $l_t_id                 = $this->mysql->real_escape_string($l_t_id);
+        $l_date                 = $this->mysql->real_escape_string($l_date);
+        $l_tt_hour_start        = $this->mysql->real_escape_string($l_tt_hour_start);
+        $l_tt_hour_end          = $this->mysql->real_escape_string($l_tt_hour_end);
+        $l_tt_minut_start       = $this->mysql->real_escape_string($l_tt_minut_start);
+        $l_tt_minut_end         = $this->mysql->real_escape_string($l_tt_minut_end);
+        $query                  = "SELECT * FROM `lessons`,`students`,`subjects` 
+                                WHERE `l_t_id`          = '".$l_t_id."'
+                                AND `l_date`            = '".$l_date."'
+                                AND `l_tt_hour_start`   = '".$l_tt_hour_start."'
+                                AND `l_tt_hour_end`     = '".$l_tt_hour_end."'
+                                AND `l_tt_minut_start`  = '".$l_tt_minut_start."'
+                                AND `l_tt_minut_end`    = '".$l_tt_minut_end."'
+                                AND `l_st_id`           = `st_id`
+                                AND `l_s_id`            = `s_id`";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getDataLessonFromId($l_id)
+    {
+        $l_id                   = $this->mysql->real_escape_string($l_id);
+        $query                  = "SELECT * FROM `lessons`,`students`,`subjects` 
+                                WHERE `l_id`          = '".$l_id."'
+                                AND `l_st_id`           = `st_id`
+                                AND `l_s_id`            = `s_id`";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function delLesson($num_lesson)
+    {
+        $num_lesson             = $this->mysql->real_escape_string($num_lesson);
+        $query                  = "DELETE FROM `lessons` WHERE `l_id` = '".$num_lesson."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function delLessonSetData($num_lesson)
+    {
+        $num_lesson             = $this->mysql->real_escape_string($num_lesson);
+        $query                  = "UPDATE `lessons_delete` SET `who_delete`='".$_SESSION['user_id']."',`time_delete`='".strtotime("now")."' WHERE `l_id` = '".$num_lesson."'";
+        $result                 = $this->mysql->query($query);
+        return $result;         
+    }
+
 }
 ?>

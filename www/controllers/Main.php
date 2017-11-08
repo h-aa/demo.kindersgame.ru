@@ -740,6 +740,39 @@ public function student_add()
         
     }
 
+    function lesson_del($num_lesson = false)
+    {
+        if(!$this->auth->isAdmin() || !$num_lesson)
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'lesson_del';
+        $num_lesson     = htmlspecialchars($num_lesson);
+        $data_lesson    = $this->model->getDataLessonFromId($num_lesson);
+        if($data_lesson->num_rows === 0)
+        {
+            header('Location: /');
+            exit();            
+        }
+        if($_POST['agree'])
+        {
+            if($this->model->delLesson($num_lesson))
+            {
+                $this->model->delLessonSetData($num_lesson);
+                require_once("views/lesson_del_success.php");
+            } else {
+                require_once("views/lesson_del_error.php");
+            }
+            exit();
+        }
+        $data           = $data_lesson->fetch_assoc();
+        require_once("views/lesson_del.php"); 
+
+
+    }
+
     //Обработка Ajax запросов
 
     public function subject_teachers($s_id)

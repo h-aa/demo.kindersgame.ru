@@ -11,9 +11,10 @@ require_once('views/header.php');
             $num_day            = $num_day == 0 ? 7 : $num_day;
             $day_of_week        = $this->help->dayWeek($num_day);
             $date               = date("d.m", $a);
+            $date_full          = date("d.m.Y", $a);
             $teachers           = $this->model->getTeachersActive();
             $max_lessons_data   = $this->model->maxLessonsInDay($num_day);
-            $max_lessons_data    = $max_lessons_data->fetch_assoc();
+            $max_lessons_data   = $max_lessons_data->fetch_assoc();
             if(!$max_lessons_data['num'])
             {
                 continue;
@@ -58,7 +59,20 @@ require_once('views/header.php');
                                         echo '<td align="center">-</td>';
                                     } else {
                                         $l_data = $lesson_time->fetch_assoc();
-                                        echo '<td align="center"><i class="fa fa-clock-o fa-lg"></i> '.sprintf('%02d', $l_data['tt_hour_start']).':'.sprintf('%02d', $l_data['tt_minut_start']).'-'.sprintf('%02d', $l_data['tt_hour_end']).':'.sprintf('%02d', $l_data['tt_minut_end']).'</td>';
+                                        echo '<td align="center"><i class="fa fa-clock-o fa-lg"></i> <b>'.sprintf('%02d', $l_data['tt_hour_start']).':'.sprintf('%02d', $l_data['tt_minut_start']).'-'.sprintf('%02d', $l_data['tt_hour_end']).':'.sprintf('%02d', $l_data['tt_minut_end']).'</b><br>';
+                                        $lesson_students = $this->model->getDataLesson($t_id, $date_full, $l_data['tt_hour_start'], $l_data['tt_hour_end'], $l_data['tt_minut_start'], $l_data['tt_minut_end']);
+                                        while($row = $lesson_students->fetch_assoc())
+                                        {
+                                            echo '';
+                                            echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
+                                            if($this->auth->isAdmin())
+                                            {
+                                                //echo '<i class="fa fa-minus-circle fa-lg time_del_btn"></i>';
+                                                echo '<br><a class="btn btn-danger btn-xs" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
+                                            }
+                                            echo '<br>';
+                                        }
+                                        echo '</td>';
                                     }   
                                 }
                             echo '</tr>';
