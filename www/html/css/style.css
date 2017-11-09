@@ -115,3 +115,40 @@
 .time_del_btn{
     cursor: pointer;
 }
+
+.navbar-brand{
+    font-size: 20pt;
+}
+
+.blog-footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;  
+  padding: 0px 0;
+  color: #fff;
+  //text-align: center;
+  background-color: #383d45;
+  //border-top: 1px solid #e5e5e5;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.blog-footer a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.blog-footer ul, ol {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.footer-menu {
+  text-align: left;
+}
+
+@media screen and (max-width: 1024px) {
+  .footer-menu {
+    text-align: right;
+  }  
+}

@@ -24,7 +24,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 
     <!-- Static navbar -->                                                                                                                  
     <div class="navbar  navbar-default navbar-static-top" role="navigation">                                                                 
-      <div class="container">                                                                                                               
+      <div class="container-fluid">                                                                                                               
         <div class="navbar-header">                                                                                                         
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">                                
             <span class="sr-only">Toggle navigation</span>                                                                                  
@@ -65,7 +65,8 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
             <li <?=$this->help->urlActive('logout')?>><a href="/logout/">Выход</a></li>
         <?php } else { ?>
             <li <?=$this->help->urlActive('login')?>><a href="/login/">Авторизация</a></li>
-        <?php } ?>        
+        <?php } ?>
+            <li><a target="_blank" href="https://kindersgame.ru/cards/">Магазин</a></li>        
           </ul>                                                                                                                             
         </div><!--/.nav-collapse -->                                                                                                        
       </div>                                                                                                                                
