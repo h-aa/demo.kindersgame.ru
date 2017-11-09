@@ -740,6 +740,16 @@ public function student_add()
         
     }
 
+    function lesson_add_from_schedule()
+    {
+        $l_t_id             = $_POST['l_t_id']              ? htmlspecialchars($_POST['l_t_id'])        : '';
+        $l_date             = $_POST['l_date']              ? htmlspecialchars($_POST['l_date'])        : '';
+        $l_tt_id            = $_POST['l_tt_id']             ? $_POST['l_tt_id']                         : '';
+        $students = $this->model->getStudents();
+        $subjects = $this->model->getTeacherSubject($l_t_id);
+        require_once("views/lesson_add_from_schedule.php");
+    }
+
     function lesson_del($num_lesson = false)
     {
         if(!$this->auth->isAdmin() || !$num_lesson)

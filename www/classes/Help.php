@@ -73,5 +73,12 @@ class Help
         return $day_name[$day];
     }
 
+    public function printPost()
+    {
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
+    }
+
 
 }

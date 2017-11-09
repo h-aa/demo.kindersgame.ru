@@ -241,6 +241,18 @@ class MainModel
         return $result;
     }
 
+    function getTeacherSubjectGroup($t_id)
+    {
+        $t_id                   = $this->mysql->real_escape_string($t_id);
+        $query                  = "SELECT * FROM `teachers_subject`,`subjects` 
+                                WHERE 
+                                ts_teacher_id = '".$t_id."' 
+                                AND ts_subject_id = s_id 
+                                AND s_active = 1
+                                AND s_group = 1";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
 
 	function addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active)
 	{

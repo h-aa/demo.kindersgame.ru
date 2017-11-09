@@ -59,18 +59,48 @@ require_once('views/header.php');
                                         echo '<td align="center">-</td>';
                                     } else {
                                         $l_data = $lesson_time->fetch_assoc();
+                                        $unix_time_start = strtotime($date_full.' '.$l_data['tt_hour_start'].':'.$l_data['tt_minut_start']);
                                         echo '<td align="center"><i class="fa fa-clock-o fa-lg"></i> <b>'.sprintf('%02d', $l_data['tt_hour_start']).':'.sprintf('%02d', $l_data['tt_minut_start']).'-'.sprintf('%02d', $l_data['tt_hour_end']).':'.sprintf('%02d', $l_data['tt_minut_end']).'</b><br>';
                                         $lesson_students = $this->model->getDataLesson($t_id, $date_full, $l_data['tt_hour_start'], $l_data['tt_hour_end'], $l_data['tt_minut_start'], $l_data['tt_minut_end']);
+                                        $n = 0;
                                         while($row = $lesson_students->fetch_assoc())
                                         {
                                             echo '';
                                             echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
-                                            if($this->auth->isAdmin())
+                                            if($this->auth->isAdmin() && strtotime("now") < $unix_time_start)
                                             {
-                                                //echo '<i class="fa fa-minus-circle fa-lg time_del_btn"></i>';
-                                                echo '<br><a class="btn btn-danger btn-xs" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
+                                                echo '<br><a class="btn btn-danger btn-block btn-xs" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
                                             }
                                             echo '<br>';
+                                            $n++;
+                                        }
+                                        //размещение или не размещение кнопки добавления занятия в Расписание
+                                        
+                                        if($this->auth->isAdmin() && strtotime("now") < $unix_time_start){
+                                            if($n == 0)
+                                            {
+                                                ?>
+                                                    <form action="/lesson_add_from_schedule" method="post">
+                                                    <input type="hidden" name="l_t_id" value="<?=$t_id?>">
+                                                    <input type="hidden" name="l_date" value="<?=$date_full?>">
+                                                    <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
+                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs">Добавить</button>
+                                                    </form>
+                                                <?php
+                                            } else {
+                                                $teacher_lessons_active = $this->model->getTeacherSubjectGroup($t_id);
+                                                if($teacher_lessons_active->num_rows > 0)
+                                                {
+                                                ?>
+                                                    <form action="/lesson_add_from_schedule" method="post">
+                                                    <input type="hidden" name="l_t_id" value="<?=$t_id?>">
+                                                    <input type="hidden" name="l_date" value="<?=$date_full?>">
+                                                    <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
+                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs">Добавить</button>
+                                                    </form>
+                                                <?php                                                
+                                                }
+                                            }
                                         }
                                         echo '</td>';
                                     }   
