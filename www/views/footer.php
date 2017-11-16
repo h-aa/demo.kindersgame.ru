@@ -1,7 +1,7 @@
 <?php
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 ?>
-    </div>
+    </div><br><br>
     <div class="blog-footer">
         <div class='container'>
             <div class='row'>

@@ -37,27 +37,54 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
         <div class="navbar-collapse collapse">                                                                                                                                                                                                                           
           <ul class="nav navbar-nav navbar-right">                                                                                          
             <li <?=$this->help->urlActive('schedule')?>><a href="/schedule/">Расписание</a></li>                                                                                          
-        <?php if($this->auth->isAdmin()){ ?>
+        <?php if($this->auth->isLogin()){ ?>
             <li>                                                                                                          
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Администрирование <b class="caret"></b></a>                                 
                 <ul class="dropdown-menu">
+                <?php if($this->auth->userRights(1) || $this->auth->isAdmin()){ ?>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Расписание</li>                                                                                 
                     <li <?=$this->help->urlActive('lesson_add')?>><a href="/lesson_add/">Добавить урок в расписание</a></li>
-                    <!--<li <?=$this->help->urlActive('lesson_del')?>><a href="/lesson_del/">Удалить урок из расписания</a></li>-->
+                <?php } ?>
+                <?php if($this->auth->userRights(3) || $this->auth->userRights(4) || $this->auth->isAdmin()){ ?>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Ученики</li>                                                                                 
+                <?php } ?>
+                <?php if($this->auth->userRights(3) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('student_add')?>><a href="/student_add/">Добавить ученика</a></li>
+                <?php } ?>
+                <?php if($this->auth->userRights(4) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('student_edit')?>><a href="/student_edit/">Редактировать ученика</a></li>
+                <?php } ?>
+                <?php if($this->auth->userRights(5) || $this->auth->userRights(6) || $this->auth->userRights(7) || $this->auth->isAdmin()){ ?>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Преподаватели</li>                                                                                 
+                <?php } ?>
+                <?php if($this->auth->userRights(5) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('teacher_add')?>><a href="/teacher_add/">Добавить преподавателя</a></li>
+                <?php } ?>
+                <?php if($this->auth->userRights(6) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('teacher_edit')?>><a href="/teacher_edit/">Редактировать преподавателя</a></li>
+                <?php } ?>
+                <?php if($this->auth->userRights(7) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('teacher_time')?>><a href="/teacher_time/">Редактировать расписание преподавателя</a></li>
+                <?php } ?>
+                <?php if($this->auth->userRights(8) || $this->auth->userRights(9) || $this->auth->isAdmin()){ ?>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Предметы</li>
+                <?php } ?>
+                <?php if($this->auth->userRights(8) || $this->auth->isAdmin()){ ?>
                     <li <?=$this->help->urlActive('subject_add')?>><a href="/subject_add/">Добавить предмет</a></li>
-                    <li <?=$this->help->urlActive('subject_edit')?>><a href="/subject_edit/">Редактировать предмет</a></li>                                        
+                <?php } ?>
+                <?php if($this->auth->userRights(9) || $this->auth->isAdmin()){ ?>
+                    <li <?=$this->help->urlActive('subject_edit')?>><a href="/subject_edit/">Редактировать предмет</a></li>
+                <?php } ?>
+                <?php if($this->auth->isAdmin()){ ?>
+                    <li class="divider"></li>                                                                                                   
+                    <li class="dropdown-header">Системные пользователи</li>
+                    <li <?=$this->help->urlActive('user_add')?>><a href="/user_add/">Добавить пользователя</a></li>                
+                    <li <?=$this->help->urlActive('user_edit')?>><a href="/subject_edit/">Редактировать пользователя</a></li>
+                <?php } ?>
                 </ul>                
             </li>
         <?php } ?>

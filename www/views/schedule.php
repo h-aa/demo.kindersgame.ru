@@ -67,7 +67,7 @@ require_once('views/header.php');
                                         {
                                             echo '';
                                             echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
-                                            if($this->auth->isAdmin() && strtotime("now") < $unix_time_start)
+                                            if(($this->auth->isAdmin() || $this->auth->userRights(2)) && strtotime("now") < $unix_time_start)
                                             {
                                                 echo '<br><a class="btn btn-danger btn-block btn-xs" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
                                             }
@@ -76,7 +76,7 @@ require_once('views/header.php');
                                         }
                                         //размещение или не размещение кнопки добавления занятия в Расписание
                                         
-                                        if($this->auth->isAdmin() && strtotime("now") < $unix_time_start){
+                                        if(($this->auth->isAdmin() || $this->auth->userRights(1)) && strtotime("now") < $unix_time_start){
                                             if($n == 0)
                                             {
                                                 ?>

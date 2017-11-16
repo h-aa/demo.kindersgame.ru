@@ -488,5 +488,91 @@ class MainModel
         return $result;         
     }
 
+    function getRights()
+    {
+        $query                  = "SELECT * FROM `rights` WHERE `r_active` = '1' ORDER BY `r_id` ASC";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function checkUserRight($u_id, $r_id)
+    {
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $r_id                   = $this->mysql->real_escape_string($r_id);
+        $query                  = "SELECT * FROM `user_rights` WHERE `ur_u_id` = '".$u_id."' AND `ur_r_id` = '".$r_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active)
+    {
+		$u_login     	= $this->mysql->real_escape_string($u_login);
+        $u_password 	= $this->mysql->real_escape_string($u_password);
+        $u_first_name 	= $this->mysql->real_escape_string($u_first_name);
+        $u_second_name 	= $this->mysql->real_escape_string($u_second_name);
+        $u_third_name 	= $this->mysql->real_escape_string($u_third_name);
+        $u_email 	    = $this->mysql->real_escape_string($u_email);
+        $u_phone 	    = $this->mysql->real_escape_string($u_phone);
+        $u_comment 	    = $this->mysql->real_escape_string($u_comment);
+        $u_active 	    = $this->mysql->real_escape_string($u_active);
+        $u_who_add      = $this->mysql->real_escape_string($_SESSION['user_id']);
+        $query          = "INSERT INTO `users`(
+                            `u_login`,
+                            `u_password`,
+                            `u_first_name`,
+                            `u_second_name`, 
+                            `u_third_name`, 
+                            `u_phone`, 
+                            `u_email`, 
+                            `u_comment`, 
+                            `u_active`,
+                            `u_who_add`
+                            ) VALUES (
+                            '".$u_login."',
+                            '".$u_password."',
+                            '".$u_first_name."', 
+                            '".$u_second_name."', 
+                            '".$u_third_name."', 
+                            '".$u_phone."', 
+                            '".$u_email."', 
+                            '".$u_comment."', 
+                            '".$u_active."',
+                            '".$u_who_add."'
+                            )";
+        $result         = $this->mysql->query($query);
+        return $this->mysql->insert_id;        
+    }
+
+    function checkLogin($u_login)
+    {
+        $u_login     	= $this->mysql->real_escape_string($u_login);
+        $query          = "SELECT * FROM `users` WHERE `u_login` = '".$u_login."'";
+        $result         = $this->mysql->query($query);
+        return $result;
+    }
+
+    function checkRightId($r_id)
+    {
+        $r_id                   = $this->mysql->real_escape_string($r_id);
+        $query                  = "SELECT * FROM `rights` WHERE `r_id` = '".$r_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function addUserRight($r_id, $u_id)
+    {
+        $r_id                   = $this->mysql->real_escape_string($r_id);
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $query                  = "INSERT INTO `users_right`(
+                                `ur_r_id`, 
+                                `ur_u_id`
+                                ) VALUES (
+                                '".$r_id."',
+                                '".$u_id."'
+                                )";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }            
+
 }
 ?>

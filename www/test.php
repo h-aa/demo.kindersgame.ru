@@ -6,5 +6,6 @@
 //     echo 'Не истина';
 // }
 $today  = date("d.m.Y");
-echo $today;
+//echo sha1("KLJAHSKDH&*^kasnhl" . $user_password);
+echo iconv_strlen("Привет",'UTF-8');
 ?>

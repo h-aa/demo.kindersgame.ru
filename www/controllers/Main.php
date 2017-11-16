@@ -38,17 +38,17 @@ class MainController
             exit();
         }
 
-        if(!$_POST['user_name'])
+        if(!$_POST['u_login'])
         {
             $this->help->error[] = 'Не указано имя пользователя';
         }
-        if(!$_POST['user_password'])
+        if(!$_POST['u_password'])
         {
             $this->help->error[] = 'Не указан пароль';
         }
-        if($_POST['user_name'] && $_POST['user_password'])
+        if($_POST['u_login'] && $_POST['u_password'])
         {
-            if(!$this->auth->userLogin($_POST['user_name'], $_POST['user_password']))
+            if(!$this->auth->userLogin($_POST['u_login'], $_POST['u_password']))
             {
                 $this->help->error[] = 'Не верный логин или пароль';
             }
@@ -80,7 +80,7 @@ class MainController
 
     public function teacher_add()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(5))
         {
             header('Location: /');
             exit();
@@ -143,7 +143,7 @@ class MainController
 
     public function teacher_edit()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(6))
         {
             header('Location: /');
             exit();
@@ -237,7 +237,7 @@ class MainController
 
     public function teacher_time()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(7))
         {
             header('Location: /');
             exit();
@@ -317,7 +317,7 @@ class MainController
 
     public function subject_add()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(8))
         {
             header('Location: /');
             exit();
@@ -364,7 +364,7 @@ class MainController
 
     public function subject_edit()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(9))
         {
             header('Location: /');
             exit();
@@ -429,7 +429,7 @@ class MainController
 
 public function student_add()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(3))
         {
             header('Location: /');
             exit();
@@ -491,7 +491,7 @@ public function student_add()
 
     public function student_edit()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(4))
         {
             header('Location: /');
             exit();
@@ -573,7 +573,7 @@ public function student_add()
 
     public function lesson_add()
     {
-        if(!$this->auth->isAdmin())
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(1))
         {
             header('Location: /');
             exit();
@@ -593,11 +593,6 @@ public function student_add()
             require_once("views/lesson_add.php");
             exit();
         }
-        
-        // echo '<pre>';
-        // print_r($_POST);
-        // echo '</pre>';
-        // exit();
 
         if(!$l_st_id)
         {
@@ -752,7 +747,7 @@ public function student_add()
 
     function lesson_del($num_lesson = false)
     {
-        if(!$this->auth->isAdmin() || !$num_lesson)
+        if((!$this->auth->isAdmin() && !$this->auth->userRights(2)) || !$num_lesson)
         {
             header('Location: /');
             exit();
@@ -779,10 +774,148 @@ public function student_add()
         }
         $data           = $data_lesson->fetch_assoc();
         require_once("views/lesson_del.php"); 
-
-
     }
 
+    
+    
+    public function user_add()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'user_add';
+        
+        $u_login            = $_POST['u_login']         ? htmlspecialchars(trim($_POST['u_login'])) : '';
+        $u_password         = $_POST['u_password']      ? trim($_POST['u_password'])                : '';
+        $u_password2        = $_POST['u_password2']     ? trim($_POST['u_password2'])               : '';
+        $u_first_name       = $_POST['u_first_name']    ? htmlspecialchars($_POST['u_first_name'])  : '';
+        $u_second_name      = $_POST['u_second_name']   ? htmlspecialchars($_POST['u_second_name']) : '';
+        $u_third_name       = $_POST['u_third_name']    ? htmlspecialchars($_POST['u_third_name'])  : '';
+        $u_email            = $_POST['u_email']         ? htmlspecialchars($_POST['u_email'])       : '';
+        $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
+        $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
+        $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';
+
+        // $this->help->printPost();
+        // exit;
+        
+        if(!$_POST)
+        {
+            require_once("views/user_add.php");
+            exit();
+        }
+        if(!$u_login)
+        {
+            $this->help->error[] = 'Не указан логин пользователя';
+        }
+        if($u_login)
+        {
+            $check_login        = $this->model->checkLogin($u_login);
+            if($check_login->num_rows > 0)
+            {
+                $this->help->error[] = 'Пользователь с таким логином уже имеется в базе данных';
+            }
+        }
+        if(!$u_password)
+        {
+            $this->help->error[] = 'Не указан пароль пользователя';
+        }
+        if(!$u_password)
+        {
+            $this->help->error[] = 'Не указано подтверждение пароля пользователя';
+        }        
+        if($u_password && iconv_strlen($u_password,'UTF-8') < 6)
+        {
+            $this->help->error[] = 'Пароль должен содержать как минимум 6 символов';
+        }
+        if($u_password && $u_password2 && $u_password !=$u_password2)
+        {
+            $this->help->error[] = 'Пароль и подтверждение пароля не сопадают';
+        }                       
+        if(!$u_first_name)
+        {
+            $this->help->error[] = 'Не указано имя пользователя';
+        }
+        if(!$u_second_name)
+        {
+            $this->help->error[] = 'Не указана фамилия пользователя';
+        }
+        if(!$u_phone)
+        {
+            $this->help->error[] = 'Не указан телефон пользователя';
+        }        
+		if($u_email && !filter_var($u_email, FILTER_VALIDATE_EMAIL))
+		{
+			$this->help->error[] = 'Неверный формат Email';
+		}
+
+        if($this->help->error)
+        {
+            require_once("views/user_add.php");
+            exit();
+        }
+
+        $u_password = sha1(SALT . $u_password);
+        $u_id = $this->model->addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active);
+        if($u_id)
+        {
+            if($_POST['rights'])
+            {
+                foreach($_POST['rights'] as $val)
+                {
+                    $check_right = $this->model->checkRightId($val);
+                    if($check_right->num_rows > 0)
+                    {
+                        $this->model->addUserRight($val, $u_id);
+                    }    
+                }
+            }
+            require_once("views/user_add_success.php");
+            exit();            
+        } else {
+            require_once("views/user_add_error.php");
+            exit();            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //Обработка Ajax запросов
 
     public function subject_teachers($s_id)
@@ -903,5 +1036,34 @@ public function student_add()
             }
         }
     }
+
+    private function userRightsTable($u_id = false)
+    {
+        $u_id = $u_id;
+        $rights_data       = $this->model->getRights();
+        if($rights_data->num_rows === 0)
+        {
+            return false;
+        }
+        require_once("views/user_rights_table.php");
+    }
+
+    private function checkUserRight($u_id = false, $r_id = false)
+    {
+        if(!$u_id || !$r_id)
+        {
+            return false;
+        } else {
+            $check_result = $this->model->checkUserRight($u_id, $r_id);
+            if($check_result->num_rows === 0)
+            {
+                return false;
+            } else {
+                $text = ' checked';
+                return $text;
+            }
+        }
+    }    
+
 }
 ?>
