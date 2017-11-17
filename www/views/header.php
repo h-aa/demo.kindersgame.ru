@@ -83,7 +83,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Системные пользователи</li>
                     <li <?=$this->help->urlActive('user_add')?>><a href="/user_add/">Добавить пользователя</a></li>                
-                    <li <?=$this->help->urlActive('user_edit')?>><a href="/subject_edit/">Редактировать пользователя</a></li>
+                    <li <?=$this->help->urlActive('user_edit')?>><a href="/user_edit/">Редактировать пользователя</a></li>
                 <?php } ?>
                 </ul>                
             </li>

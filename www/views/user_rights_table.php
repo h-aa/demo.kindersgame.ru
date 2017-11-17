@@ -8,7 +8,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                 <div class="col-md-8">
 <?php while($row = $rights_data->fetch_assoc()) { ?>
                     <div class="checkbox">
-                       <label><input type="checkbox" name="rights[]" value="<?=$row['r_id']?>" <?=$this->checkTeacherSubject($t_id, $row['s_id'])?>><?=$row['r_name']?></label>
+                       <label><input type="checkbox" name="rights[]" value="<?=$row['r_id']?>" <?=$this->checkUserRight($u_id, $row['r_id'])?>><?=$row['r_name']?></label>
                     </div>
 <?php } ?>        
                 </div>

@@ -499,7 +499,7 @@ class MainModel
     {
         $u_id                   = $this->mysql->real_escape_string($u_id);
         $r_id                   = $this->mysql->real_escape_string($r_id);
-        $query                  = "SELECT * FROM `user_rights` WHERE `ur_u_id` = '".$u_id."' AND `ur_r_id` = '".$r_id."'";
+        $query                  = "SELECT * FROM `users_right` WHERE `ur_u_id` = '".$u_id."' AND `ur_r_id` = '".$r_id."'";
         $result                 = $this->mysql->query($query);
         return $result;        
     }
@@ -543,10 +543,49 @@ class MainModel
         return $this->mysql->insert_id;        
     }
 
-    function checkLogin($u_login)
+    function editUserData($u_id, $u_login, $u_password = false, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active)
+    {
+		$u_id     	    = $this->mysql->real_escape_string($u_id);
+        $u_login     	= $this->mysql->real_escape_string($u_login);
+        $u_password 	= $this->mysql->real_escape_string($u_password);
+        $u_first_name 	= $this->mysql->real_escape_string($u_first_name);
+        $u_second_name 	= $this->mysql->real_escape_string($u_second_name);
+        $u_third_name 	= $this->mysql->real_escape_string($u_third_name);
+        $u_email 	    = $this->mysql->real_escape_string($u_email);
+        $u_phone 	    = $this->mysql->real_escape_string($u_phone);
+        $u_comment 	    = $this->mysql->real_escape_string($u_comment);
+        $u_active 	    = $this->mysql->real_escape_string($u_active);
+        $u_who_edit     = $this->mysql->real_escape_string($_SESSION['user_id']);
+        $query          = "UPDATE `users` set
+                          `u_login`       = '".$u_login."',";
+        if($u_password)
+        {
+            $query      .=  "`u_password`    = '".$u_password."',";
+        }
+
+        $query          .=" `u_first_name`  = '".$u_first_name."',
+                            `u_second_name` = '".$u_second_name."',
+                            `u_third_name`  = '".$u_third_name."',
+                            `u_phone`       = '".$u_phone."',
+                            `u_email`       = '".$u_email."',
+                            `u_comment`     = '".$u_comment."',
+                            `u_active`      = '".$u_active."',
+                            `u_who_edit`    = '".$u_who_edit."'
+                            WHERE 
+                            `u_id`          = '".$u_id."'";
+
+        $result         = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function checkLogin($u_login, $u_id = false)
     {
         $u_login     	= $this->mysql->real_escape_string($u_login);
         $query          = "SELECT * FROM `users` WHERE `u_login` = '".$u_login."'";
+        if($u_id)
+        {
+            $query      .= " AND `u_id` <>'".$u_id."'";
+        }
         $result         = $this->mysql->query($query);
         return $result;
     }
@@ -572,6 +611,29 @@ class MainModel
                                 )";
         $result                 = $this->mysql->query($query);
         return $result;
+    }
+
+    function delUserRights($u_id)
+    {
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $query                  = "DELETE FROM `users_right` WHERE `ur_u_id` = '".$u_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;                
+    }
+
+    function getUsers()
+    {
+        $query                  = "SELECT * FROM `users`";
+        $result                 = $this->mysql->query($query);
+        return $result;
+    }
+
+    function getUserData($u_id)
+    {
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $query                  = "SELECT * FROM `users` WHERE `u_id` = '".$u_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
     }            
 
 }

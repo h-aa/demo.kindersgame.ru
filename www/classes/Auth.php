@@ -57,7 +57,7 @@ class Auth
 		if(!isset($_SESSION['is_login']))
 		{
 			return $this->is_admin;
-			exit();
+			//exit();
 		}
 		$query				            = "SELECT * FROM `admins` WHERE `user_id` = '".$_SESSION['user_id']."'";
 		$result 			            = $this->mysql->query($query);
@@ -70,6 +70,10 @@ class Auth
 
 	public function userRights($user_right, $user_id = false)
 	{
+        if(!$this->isLogin())
+        {
+            return false;
+        }
 		$user_id				        = $user_id ? $user_id : $_SESSION['user_id'];
 		$user_id 			            = $this->mysql->real_escape_string($user_id);
 		$user_right				        = $this->mysql->real_escape_string($user_right);

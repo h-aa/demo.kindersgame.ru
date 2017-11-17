@@ -823,7 +823,7 @@ public function student_add()
         {
             $this->help->error[] = 'Не указан пароль пользователя';
         }
-        if(!$u_password)
+        if(!$u_password2)
         {
             $this->help->error[] = 'Не указано подтверждение пароля пользователя';
         }        
@@ -881,7 +881,137 @@ public function student_add()
         }
     }
     
-    
+    public function user_edit()
+    {
+        if(!$this->auth->isAdmin())
+        {
+            header('Location: /');
+            exit();
+        }
+        
+        $this->help->action = 'user_edit';
+        
+        $u_id               = $_POST['u_id']            ? htmlspecialchars($_POST['u_id'])          : '';      
+        if(!$u_id)
+        {
+            $users = $this->model->getUsers();
+            require_once('views/user_select.php');
+            exit();
+        }
+        
+        $user_data = $this->model->getUserData($u_id);
+        
+        if($user_data->num_rows === 0)
+        {   
+            $this->auth->userLogout();
+            header('Location: /');
+            exit();          
+        }
+        if($u_id && !$_POST['edit'])
+        {
+            $u_data = $user_data->fetch_assoc();
+            $u_login            = $u_data['u_login'];
+            $u_first_name       = $u_data['u_first_name'];
+            $u_second_name      = $u_data['u_second_name'];
+            $u_third_name       = $u_data['u_third_name'];
+            $u_email            = $u_data['u_email'];
+            $u_phone            = $u_data['u_phone'];
+            $u_comment          = $u_data['u_comment'];
+            $u_active           = $u_data['u_active'];             
+        } else {
+            $u_login            = $_POST['u_login']         ? htmlspecialchars(trim($_POST['u_login'])) : '';
+            $u_password         = $_POST['u_password']      && !empty($_POST['u_password'])     ? trim($_POST['u_password'])  : '';
+            $u_password2        = $_POST['u_password2']     && !empty($_POST['u_password2'])    ? trim($_POST['u_password2']) : '';            
+            $u_first_name       = $_POST['u_first_name']    ? htmlspecialchars($_POST['u_first_name'])  : '';
+            $u_second_name      = $_POST['u_second_name']   ? htmlspecialchars($_POST['u_second_name']) : '';
+            $u_third_name       = $_POST['u_third_name']    ? htmlspecialchars($_POST['u_third_name'])  : '';
+            $u_email            = $_POST['u_email']         ? htmlspecialchars($_POST['u_email'])       : '';
+            $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
+            $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
+            $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';  
+        }
+
+        if(!$_POST['edit'])
+        {
+            require_once("views/user_edit.php");
+            exit();
+        }
+        
+        if(!$u_login)
+        {
+            $this->help->error[] = 'Не указан логин пользователя';
+        }
+        if($u_login)
+        {
+            $check_login        = $this->model->checkLogin($u_login, $u_id);
+            if($check_login->num_rows > 0)
+            {
+                $this->help->error[] = 'Пользователь с таким логином уже имеется в базе данных';
+            }
+        }
+        if($u_password)
+        {
+            if(!$u_password2)
+            {
+                $this->help->error[] = 'Не указано подтверждение пароля пользователя';
+            }        
+            if($u_password && iconv_strlen($u_password,'UTF-8') < 6)
+            {
+                $this->help->error[] = 'Пароль должен содержать как минимум 6 символов';
+            }
+            if($u_password !=$u_password2)
+            {
+                $this->help->error[] = 'Пароль и подтверждение пароля не сопадают';
+            }
+        }                       
+        if(!$u_first_name)
+        {
+            $this->help->error[] = 'Не указано имя пользователя';
+        }
+        if(!$u_second_name)
+        {
+            $this->help->error[] = 'Не указана фамилия пользователя';
+        }
+        if(!$u_phone)
+        {
+            $this->help->error[] = 'Не указан телефон пользователя';
+        }        
+		if($u_email && !filter_var($u_email, FILTER_VALIDATE_EMAIL))
+		{
+			$this->help->error[] = 'Неверный формат Email';
+		}
+
+        if($this->help->error)
+        {
+            require_once("views/user_edit.php");
+            exit();
+        }
+        
+        if($u_password)
+        {
+            $u_password = sha1(SALT . $u_password);
+        }
+        if($this->model->editUserData($u_id, $u_login, $u_password, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active))
+        {
+            if($_POST['rights'])
+            {
+                $this->model->delUserRights($u_id);
+                foreach($_POST['rights'] as $val)
+                {
+                    if($this->model->checkRightId($val))
+                    {
+                        $this->model->addUserRight($val, $u_id);
+                    }    
+                }
+            }            
+            require_once("views/user_edit_success.php");
+            exit();
+        } else {
+            require_once("views/user_edit_error.php");
+            exit();            
+        }
+    }
+
     
     
     

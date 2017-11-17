@@ -1,9 +1,6 @@
 <?php
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 require_once('header.php');
-// echo '<pre>';
-// print_r($_POST);
-// echo '</pre>';
 ?>
 <data class="col-md-12">
       <div class="panel panel-default">
