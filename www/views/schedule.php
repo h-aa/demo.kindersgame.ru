@@ -1,9 +1,30 @@
 <?php
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 require_once('views/header.php');
+//$this->help->printPost();
 ?>
-            <center><h2>Расписание занятий:</h2></center>
+            <center><h2>Расписание занятий:</h2>
+            <?php
+            if($this->auth->isAdmin() || $this->auth->userRights(10)){                
+            ?>
             <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <form class="form-inline" role="form" method="post" action="/">
+                        <div class="form-group">
+                            <label class="sr-only" for="date_start">Начало</label>
+                            <input type="text" class="form-control date" name="date_start" id="date_start" value="<?=$_POST['date_start'] ? $_POST['date_start'] : ''?>" placeholder="Начальная дата">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="date_end">Конец</label>
+                            <input type="text" class="form-control date" name="date_end" id="date_end" value="<?=$_POST['date_end'] ? $_POST['date_end'] : ''?>" placeholder="Конечная дата">
+                        </div>                
+                        <button type="submit" class="btn btn-default">За период</button>
+                    </form>  
+                </div>
+            </div>
+            <?php } ?>
+             </center><hr>
 <?php            
 	    for($a = $start_date; $a <= $end_date; $a = $a + 86400)
         {
@@ -115,5 +136,14 @@ require_once('views/header.php');
 
 <?php
         }
+$this->help->error();       
 require_once('views/footer.php');
 ?>
+<script type="text/javascript">
+$('#date_start, #date_end').datepicker({
+       language: 'ru',
+       //startDate: '0d',
+       todayHighlight: true,
+       autoclose: true
+});
+</script>

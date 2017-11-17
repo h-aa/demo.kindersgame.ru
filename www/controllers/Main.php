@@ -17,6 +17,41 @@ class MainController
     public function schedule()
     {	
         $this->help->action = 'schedule';
+        if($_POST)
+        {
+            if(!$_POST['date_start'] && !$_POST['date_end'])
+            {
+                $this->help->error[] = 'Поля с датами не заполнены';
+                goto schedule;
+            }
+            if(!$_POST['date_start'] && $_POST['date_end'])
+            {
+                $_POST['date_start'] = $_POST['date_end'];
+            }
+            if($_POST['date_start'] && !$_POST['date_end'])
+            {
+                $_POST['date_end'] = $_POST['date_start'];
+            }            
+            $start_date = strtotime($_POST['date_start']);
+            $end_date = strtotime($_POST['date_end']);
+            if($end_date < $start_date)
+            {
+                $this->help->error[] = 'Дата окончания не может быть меньше даты начала';
+                goto schedule;
+            }
+            if(($end_date - $start_date) > 5270400)
+            {
+                $this->help->error[] = 'Максимальный период не может превышать 2 месяца';
+                goto schedule;                
+            }
+            if(!$this->help->error)
+            {
+                require_once('views/schedule.php');
+                exit();            
+            }            
+
+        }
+        schedule:
         $start_date = mktime(0, 0, 0, date("m")  , date("d"), date("Y"));
         $end_date   = mktime(0, 0, 0, date("m")  , date("d")+7, date("Y"));
         require_once('views/schedule.php');
@@ -936,7 +971,7 @@ public function student_add()
             require_once("views/user_edit.php");
             exit();
         }
-        
+
         if(!$u_login)
         {
             $this->help->error[] = 'Не указан логин пользователя';
