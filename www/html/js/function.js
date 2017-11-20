@@ -24,3 +24,13 @@ function get_teacher_time_to_lesson(){
 	});
 	//return false;    
 }
+
+function printDiv(divName) {
+    $('#'+divName+' .button-block').hide();
+    var printContents = $('#'+divName).html();
+    var originalContents = $('body').html();
+    $('body').html(printContents);
+    window.print();
+    $('body').html(originalContents);
+    $('#'+divName+' .button-block').show();
+}

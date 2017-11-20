@@ -24,19 +24,7 @@ require_once('views/header.php');
                 </div>
             </div>
             <?php } ?>
-             </center><hr>
-        <script >
-        function printDiv(divName) {
-            var printContents = document.getElementById(divName).innerHTML;
-            var originalContents = document.body.innerHTML;
-            document.getElementsByClassName('button-delete')[0].style.visibility = 'hidden';
-            document.body.innerHTML = printContents;
-
-            window.print();
-
-            document.body.innerHTML = originalContents;
-        }
-        </script>             
+             </center><hr>             
 <?php            
 	    for($a = $start_date; $a <= $end_date; $a = $a + 86400)
         {
@@ -108,7 +96,7 @@ require_once('views/header.php');
                                             echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
                                             if(($this->auth->isAdmin() || $this->auth->userRights(2)) && strtotime("now") < $unix_time_start)
                                             {
-                                                echo '<br><a class="btn btn-danger btn-block btn-xs button-delete" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
+                                                echo '<br><a class="btn btn-danger btn-block btn-xs button-block" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
                                             }
                                             echo '<br>';
                                             $n++;
@@ -119,24 +107,28 @@ require_once('views/header.php');
                                             if($n == 0)
                                             {
                                                 ?>
+                                                 <div class="button-block">
                                                     <form action="/lesson_add_from_schedule" method="post">
                                                     <input type="hidden" name="l_t_id" value="<?=$t_id?>">
                                                     <input type="hidden" name="l_date" value="<?=$date_full?>">
                                                     <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
                                                     <button type="submit" id="btn" class="btn btn-success btn-block btn-xs button-add">Добавить</button>
                                                     </form>
+                                                </div>
                                                 <?php
                                             } else {
                                                 $teacher_lessons_active = $this->model->getTeacherSubjectGroup($t_id);
                                                 if($teacher_lessons_active->num_rows > 0)
                                                 {
                                                 ?>
-                                                    <form action="/lesson_add_from_schedule" method="post">
-                                                    <input type="hidden" name="l_t_id" value="<?=$t_id?>">
-                                                    <input type="hidden" name="l_date" value="<?=$date_full?>">
-                                                    <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
-                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs button-add">Добавить</button>
-                                                    </form>
+                                                    <div class="button-block">
+                                                        <form action="/lesson_add_from_schedule" method="post">
+                                                        <input type="hidden" name="l_t_id" value="<?=$t_id?>">
+                                                        <input type="hidden" name="l_date" value="<?=$date_full?>">
+                                                        <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
+                                                        <button type="submit" id="btn" class="btn btn-success btn-block btn-xs button-add">Добавить</button>
+                                                        </form>
+                                                    </div>
                                                 <?php                                                
                                                 }
                                             }

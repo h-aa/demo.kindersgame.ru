@@ -164,3 +164,20 @@
 .element {
   .center-block();
 }
+
+@media print {
+
+  @page {                
+    size: landscape;
+    margin: 0mm;
+  }
+
+  html, body {
+    width: 1280px;
+  }
+
+  body {
+    margin: 0 auto;
+  }
+}
+
