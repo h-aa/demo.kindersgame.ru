@@ -25,6 +25,18 @@ require_once('views/header.php');
             </div>
             <?php } ?>
              </center><hr>
+        <script >
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.getElementsByClassName('button-delete')[0].style.visibility = 'hidden';
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+        </script>             
 <?php            
 	    for($a = $start_date; $a <= $end_date; $a = $a + 86400)
         {
@@ -42,15 +54,21 @@ require_once('views/header.php');
             }
 ?>
             <?=$day_of_week == 1 ? '<hr>' : ''?>
-			<div class="row event"> <!-- мероприятие -->
+			<div class="row event" id="print_<?=$a?>"> <!-- мероприятие -->
 				<div class="col-md-2 time">
 					<span class="daysc"><?=$date?></span>
 					<span class="monthsc"><?=$day_of_week?></span>
+            <?php
+            if($this->auth->isAdmin() || $this->auth->userRights(10)){                
+            ?>                    
+                    <br>
+                    <button class="btn btn-default" onclick="printDiv('print_<?=$a?>')"><i class="fa fa-print" aria-hidden="true" style="font-size: 17px;"></i></button>
+            <?php } ?>        
 				</div>
 				<div class="col-md-10">
 					<h3><!--Расписание занятий--></h3>
 					<div class="table-responsive">
-                    <table class="table table-condensed table-bordered table-hover ">
+                    <table class="table table-condensed table-bordered table-hover">
 					<tr>
 					<?php
                         $teachers_id = ''; 
@@ -90,7 +108,7 @@ require_once('views/header.php');
                                             echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
                                             if(($this->auth->isAdmin() || $this->auth->userRights(2)) && strtotime("now") < $unix_time_start)
                                             {
-                                                echo '<br><a class="btn btn-danger btn-block btn-xs" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
+                                                echo '<br><a class="btn btn-danger btn-block btn-xs button-delete" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
                                             }
                                             echo '<br>';
                                             $n++;
@@ -105,7 +123,7 @@ require_once('views/header.php');
                                                     <input type="hidden" name="l_t_id" value="<?=$t_id?>">
                                                     <input type="hidden" name="l_date" value="<?=$date_full?>">
                                                     <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
-                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs">Добавить</button>
+                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs button-add">Добавить</button>
                                                     </form>
                                                 <?php
                                             } else {
@@ -117,7 +135,7 @@ require_once('views/header.php');
                                                     <input type="hidden" name="l_t_id" value="<?=$t_id?>">
                                                     <input type="hidden" name="l_date" value="<?=$date_full?>">
                                                     <input type="hidden" name="l_tt_id" value="<?=$l_data['tt_time_id']?>">
-                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs">Добавить</button>
+                                                    <button type="submit" id="btn" class="btn btn-success btn-block btn-xs button-add">Добавить</button>
                                                     </form>
                                                 <?php                                                
                                                 }
