@@ -836,11 +836,12 @@ public function student_add()
         $u_email            = $_POST['u_email']         ? htmlspecialchars($_POST['u_email'])       : '';
         $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
         $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
+        $u_type             = $_POST['u_type']          ? htmlspecialchars($_POST['u_type'])        : '';
         $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';
 
         // $this->help->printPost();
         // exit;
-        
+        $students = $this->model->getStudents();
         if(!$_POST)
         {
             require_once("views/user_add.php");
@@ -890,7 +891,10 @@ public function student_add()
 		{
 			$this->help->error[] = 'Неверный формат Email';
 		}
-
+        if(!$u_type)
+        {
+            $this->help->error[] = 'Не указан тип пользователя';
+        }
         if($this->help->error)
         {
             require_once("views/user_add.php");
@@ -898,10 +902,10 @@ public function student_add()
         }
 
         $u_password = sha1(SALT . $u_password);
-        $u_id = $this->model->addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active);
+        $u_id = $this->model->addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_type, $u_active);
         if($u_id)
         {
-            if($_POST['rights'])
+            if($_POST['rights'] && $u_type == 1)
             {
                 foreach($_POST['rights'] as $val)
                 {
@@ -912,6 +916,19 @@ public function student_add()
                     }    
                 }
             }
+
+            if($_POST['students'] && $u_type == 2)
+            {
+                foreach($_POST['students'] as $val)
+                {
+                    $check_student = $this->model->getStudentData($val);
+                    if($check_student->num_rows > 0)
+                    {
+                        $this->model->addParentStudent($u_id, $val);
+                    }    
+                }
+            }            
+
             require_once("views/user_add_success.php");
             exit();            
         } else {
@@ -938,8 +955,8 @@ public function student_add()
             exit();
         }
         
-        $user_data = $this->model->getUserData($u_id);
-        
+        $user_data  = $this->model->getUserData($u_id);
+        $students   = $this->model->getStudents();
         if($user_data->num_rows === 0)
         {   
             $this->auth->userLogout();
@@ -956,6 +973,7 @@ public function student_add()
             $u_email            = $u_data['u_email'];
             $u_phone            = $u_data['u_phone'];
             $u_comment          = $u_data['u_comment'];
+            $u_type             = $u_data['u_type'];
             $u_active           = $u_data['u_active'];             
         } else {
             $u_login            = $_POST['u_login']         ? htmlspecialchars(trim($_POST['u_login'])) : '';
@@ -967,6 +985,7 @@ public function student_add()
             $u_email            = $_POST['u_email']         ? htmlspecialchars($_POST['u_email'])       : '';
             $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
             $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
+            $u_type             = $_POST['u_type']          ? htmlspecialchars($_POST['u_type'])        : '';
             $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';  
         }
 
@@ -1019,7 +1038,10 @@ public function student_add()
 		{
 			$this->help->error[] = 'Неверный формат Email';
 		}
-
+        if(!$u_type)
+        {
+            $this->help->error[] = 'Не указан тип пользователя';
+        }
         if($this->help->error)
         {
             require_once("views/user_edit.php");
@@ -1030,11 +1052,12 @@ public function student_add()
         {
             $u_password = sha1(SALT . $u_password);
         }
-        if($this->model->editUserData($u_id, $u_login, $u_password, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active))
+        if($this->model->editUserData($u_id, $u_login, $u_password, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_type, $u_active))
         {
-            if($_POST['rights'])
-            {
-                $this->model->delUserRights($u_id);
+            $this->model->delUserRights($u_id);
+            $this->model->delParentStudents($u_id);
+            if($_POST['rights'] && $u_type == 1)
+            {                
                 foreach($_POST['rights'] as $val)
                 {
                     if($this->model->checkRightId($val))
@@ -1042,7 +1065,18 @@ public function student_add()
                         $this->model->addUserRight($val, $u_id);
                     }    
                 }
-            }            
+            }
+            if($_POST['students'] && $u_type == 2)
+            {
+                foreach($_POST['students'] as $val)
+                {
+                    $check_student = $this->model->getStudentData($val);
+                    if($check_student->num_rows > 0)
+                    {
+                        $this->model->addParentStudent($u_id, $val);
+                    }    
+                }
+            }                        
             require_once("views/user_edit_success.php");
             exit();
         } else {
@@ -1206,9 +1240,10 @@ public function student_add()
         }
     }
 
-    private function userRightsTable($u_id = false)
+    private function userRightsTable($u_id = false, $u_type = false)
     {
         $u_id = $u_id;
+        $u_type = $u_type;
         $rights_data       = $this->model->getRights();
         if($rights_data->num_rows === 0)
         {
@@ -1232,7 +1267,24 @@ public function student_add()
                 return $text;
             }
         }
-    }    
+    }
+
+    private function checkParentStudent($u_id = false, $st_id = false)
+    {
+        if(!$u_id || !$st_id)
+        {
+            return false;
+        } else {
+            $check_result = $this->model->checkParentStudent($u_id, $st_id);
+            if($check_result->num_rows === 0)
+            {
+                return false;
+            } else {
+                $text = ' checked';
+                return $text;
+            }
+        }
+    }        
 
 }
 ?>

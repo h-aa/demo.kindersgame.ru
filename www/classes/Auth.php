@@ -39,6 +39,7 @@ class Auth
 			$user_data 				    = $result->fetch_array();
 			$_SESSION['is_login'] 	    = true;
 			$_SESSION['user_id']	    = $user_data['u_id'];
+            $_SESSION['user_type']      = $user_data['type'];
 			return true;
 		}
 	}

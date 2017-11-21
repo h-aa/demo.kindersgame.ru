@@ -306,7 +306,7 @@ class MainModel
 
     function getStudents()
     {
-        $query                  = "SELECT * FROM `students`";
+        $query                  = "SELECT * FROM `students` ORDER BY `st_second_name` ASC";
         $result                 = $this->mysql->query($query);
         return $result;        
     }
@@ -504,7 +504,7 @@ class MainModel
         return $result;        
     }
 
-    function addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active)
+    function addUser($u_login, $u_password,$u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_type, $u_active)
     {
 		$u_login     	= $this->mysql->real_escape_string($u_login);
         $u_password 	= $this->mysql->real_escape_string($u_password);
@@ -514,6 +514,7 @@ class MainModel
         $u_email 	    = $this->mysql->real_escape_string($u_email);
         $u_phone 	    = $this->mysql->real_escape_string($u_phone);
         $u_comment 	    = $this->mysql->real_escape_string($u_comment);
+        $u_type 	    = $this->mysql->real_escape_string($u_type);
         $u_active 	    = $this->mysql->real_escape_string($u_active);
         $u_who_add      = $this->mysql->real_escape_string($_SESSION['user_id']);
         $query          = "INSERT INTO `users`(
@@ -525,6 +526,7 @@ class MainModel
                             `u_phone`, 
                             `u_email`, 
                             `u_comment`, 
+                            `u_type`,
                             `u_active`,
                             `u_who_add`
                             ) VALUES (
@@ -536,6 +538,7 @@ class MainModel
                             '".$u_phone."', 
                             '".$u_email."', 
                             '".$u_comment."', 
+                            '".$u_type."',
                             '".$u_active."',
                             '".$u_who_add."'
                             )";
@@ -543,7 +546,7 @@ class MainModel
         return $this->mysql->insert_id;        
     }
 
-    function editUserData($u_id, $u_login, $u_password = false, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_active)
+    function editUserData($u_id, $u_login, $u_password = false, $u_first_name, $u_second_name, $u_third_name, $u_email, $u_phone, $u_comment, $u_type, $u_active)
     {
 		$u_id     	    = $this->mysql->real_escape_string($u_id);
         $u_login     	= $this->mysql->real_escape_string($u_login);
@@ -554,6 +557,7 @@ class MainModel
         $u_email 	    = $this->mysql->real_escape_string($u_email);
         $u_phone 	    = $this->mysql->real_escape_string($u_phone);
         $u_comment 	    = $this->mysql->real_escape_string($u_comment);
+        $u_type 	    = $this->mysql->real_escape_string($u_type);
         $u_active 	    = $this->mysql->real_escape_string($u_active);
         $u_who_edit     = $this->mysql->real_escape_string($_SESSION['user_id']);
         $query          = "UPDATE `users` set
@@ -569,6 +573,7 @@ class MainModel
                             `u_phone`       = '".$u_phone."',
                             `u_email`       = '".$u_email."',
                             `u_comment`     = '".$u_comment."',
+                            `u_type`        = '".$u_type."',
                             `u_active`      = '".$u_active."',
                             `u_who_edit`    = '".$u_who_edit."'
                             WHERE 
@@ -634,7 +639,39 @@ class MainModel
         $query                  = "SELECT * FROM `users` WHERE `u_id` = '".$u_id."'";
         $result                 = $this->mysql->query($query);
         return $result;        
+    }
+
+    function addParentStudent($ps_u_id, $ps_st_id)
+    {
+        $ps_u_id                = $this->mysql->real_escape_string($ps_u_id);
+        $ps_st_id               = $this->mysql->real_escape_string($ps_st_id);
+        $query                  = "INSERT INTO `parents_student`(
+                                `ps_u_id`, 
+                                `ps_st_id`) 
+                                VALUES (
+                                '".$ps_u_id."',
+                                '".$ps_st_id."'
+                                )";
+        $result                 = $this->mysql->query($query);
+        return $result;        
     }            
+
+    function checkParentStudent($u_id, $st_id)
+    {
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $st_id                  = $this->mysql->real_escape_string($st_id);
+        $query                  = "SELECT * FROM `parents_student` WHERE `ps_u_id` = '".$u_id."' AND `ps_st_id` = '".$st_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
+    function delParentStudents($u_id)
+    {
+        $u_id                   = $this->mysql->real_escape_string($u_id);
+        $query                  = "DELETE FROM `parents_student` WHERE `ps_u_id` = '".$u_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
 
 }
 ?>

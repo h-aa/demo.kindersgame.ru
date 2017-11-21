@@ -10,3 +10,14 @@ $(document).ready(function() {
         $("#messageModalBox").modal('show');
     }    
 });
+
+  $(document).on("change", "#u_type", function(){
+    var a = $(this).val();
+    if(a == 1){
+        $("#rights_data").slideDown(50);
+        $("#students_data").slideUp(50);
+    } else {
+        $("#rights_data").slideUp(50);
+        $("#students_data").slideDown(50);
+    }
+  });
