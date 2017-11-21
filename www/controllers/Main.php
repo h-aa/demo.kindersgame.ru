@@ -480,8 +480,6 @@ public function student_add()
         $st_second_name         = $_POST['st_second_name']   ? htmlspecialchars($_POST['st_second_name'])   : '';
         $st_third_name          = $_POST['st_third_name']    ? htmlspecialchars($_POST['st_third_name'])    : '';
         $st_date_birth          = $_POST['st_date_birth']    ? htmlspecialchars($_POST['st_date_birth'])    : '';
-        $st_parent_fio          = $_POST['st_parent_fio']    ? htmlspecialchars($_POST['st_parent_fio'])    : '';
-        $st_parent_phone        = $_POST['st_parent_phone']  ? htmlspecialchars($_POST['st_parent_phone'])  : '';
         $st_comment             = $_POST['st_comment']       ? htmlspecialchars($_POST['st_comment'])       : '';
         $st_active              = $_POST['st_active']        ? htmlspecialchars($_POST['st_active'])        : '';
 
@@ -502,10 +500,6 @@ public function student_add()
         {
             $this->help->error[] = 'Не указана дата рождения ученика';
         }        
-        if(!$st_parent_phone)
-        {
-            $this->help->error[] = 'Не указан телефон родителя';
-        }
         $check_student           = $this->model->checkStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth);
         if($check_student->num_rows > 0)
         {
@@ -517,7 +511,7 @@ public function student_add()
             exit();
         }
 
-        $st_id = $this->model->addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active);
+        $st_id = $this->model->addStudent($st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_comment, $st_active);
         if($st_id)
         {
             require_once("views/student_add_success.php");
@@ -561,8 +555,6 @@ public function student_add()
             $st_second_name     = $st_data['st_second_name'];
             $st_third_name      = $st_data['st_third_name'];
             $st_date_birth      = $st_data['st_date_birth'];
-            $st_parent_fio      = $st_data['st_parent_fio'];
-            $st_parent_phone    = $st_data['st_parent_phone'];
             $st_comment         = $st_data['st_comment'];
             $st_active          = $st_data['st_active'];             
         } else {
@@ -570,8 +562,6 @@ public function student_add()
             $st_second_name     = $_POST['st_second_name']   ? htmlspecialchars($_POST['st_second_name']) : '';
             $st_third_name      = $_POST['st_third_name']    ? htmlspecialchars($_POST['st_third_name'])  : '';
             $st_date_birth      = $_POST['st_date_birth']    ? htmlspecialchars($_POST['st_date_birth'])  : '';
-            $st_parent_fio      = $_POST['st_parent_fio']    ? htmlspecialchars($_POST['st_parent_fio'])  : '';
-            $st_parent_phone    = $_POST['st_parent_phone']  ? htmlspecialchars($_POST['st_parent_phone']): '';
             $st_comment         = $_POST['st_comment']       ? htmlspecialchars($_POST['st_comment'])     : '';
             $st_active          = $_POST['st_active']        ? htmlspecialchars($_POST['st_active'])      : '';  
         }
@@ -588,10 +578,6 @@ public function student_add()
         if(!$st_date_birth)
         {
             $this->help->error[] = 'Не указана дата рождения ученика';
-        }        
-        if(!$st_parent_phone)
-        {
-            $this->help->error[] = 'Не указан телефон родителя';
         }
 
         if($this->help->error || !$_POST['edit'])
@@ -600,7 +586,7 @@ public function student_add()
             exit();
         }
         
-        if($this->model->editStudentData($st_id, $st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_parent_fio, $st_parent_phone, $st_comment, $st_active))
+        if($this->model->editStudentData($st_id, $st_first_name, $st_second_name, $st_third_name, $st_date_birth, $st_comment, $st_active))
         {            
             require_once("views/student_edit_success.php");
             exit();

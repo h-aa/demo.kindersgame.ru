@@ -37,20 +37,6 @@ require_once('header.php');
                   <input id="st_date_birth" name="st_date_birth" value="<?=$st_date_birth?>" type="text" placeholder="дд.мм.гггг" class="form-control input-md date_birth" required>
                 </div>
             </div>
-
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="st_parent_fio">ФИО родителя</label>  
-                <div class="col-md-4">
-                  <input id="st_parent_fio" name="st_parent_fio" value="<?=$st_parent_fio?>" type="text" placeholder="" class="form-control input-md">
-                </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-4 control-label" for="st_parent_phone">Контактный телефон родителя*</label>  
-                <div class="col-md-4">
-                  <input id="st_parent_phone" name="st_parent_phone" value="<?=$st_parent_phone?>" type="text" class="phone form-control input-md" required>
-                </div>
-            </div>
             
             <div class="form-group">
               <label class="col-md-4 control-label" for="st_comment">Прочая информация</label>  

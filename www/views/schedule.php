@@ -2,6 +2,7 @@
 defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 require_once('views/header.php');
 //$this->help->printPost();
+//print_r($_SESSION);
 ?>
             <center><h2>Расписание занятий:</h2>
             <?php
@@ -93,7 +94,23 @@ require_once('views/header.php');
                                         while($row = $lesson_students->fetch_assoc())
                                         {
                                             echo '';
-                                            echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
+                                            if($this->auth->isAdmin() || $_SESSION['user_type'] == 1)
+                                            {
+                                                echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';
+                                            } else {
+                                                if(!$this->auth->isLogin())
+                                                {
+                                                    echo '<em>Время занято</em>';
+                                                } else {
+                                                    $check_student = $this->model->checkParentStudent($_SESSION['user_id'], $row['st_id']);
+                                                    if($check_student->num_rows === 0)
+                                                    {
+                                                        echo '<em>Время занято</em>';
+                                                    } else {
+                                                        echo '<em>'.$row['st_second_name'].' '.$row['st_first_name'].' '.$row['st_third_name'].'<br><span class="text-muted"> ('.$row['s_name'].')</span></em>';        
+                                                    }
+                                                }
+                                            }
                                             if(($this->auth->isAdmin() || $this->auth->userRights(2)) && strtotime("now") < $unix_time_start)
                                             {
                                                 echo '<br><a class="btn btn-danger btn-block btn-xs button-block" href="/lesson_del/'.$row['l_id'].'" role="button">Удалить</a>';
