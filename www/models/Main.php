@@ -663,5 +663,31 @@ class MainModel
         return $result;        
     }
 
+    function getGrafikStatus($date_grafik)
+    {
+        $date_grafik            = $this->mysql->real_escape_string($date_grafik);
+        $query                  = "SELECT * FROM `grafik_status` 
+                                WHERE 
+                                `gs_date` = '".$date_grafik."' 
+                                AND `gs_status` = '1'";
+        $result                 = $this->mysql->query($query);
+        return $result;               
+    }
+
+    function addGrafikStatusLock($date_grafik)
+    {
+        $date_grafik            = $this->mysql->real_escape_string($date_grafik);
+        $query                  = "INSERT INTO `grafik_status` (`gs_date`,`gs_status`) VALUES ('".$date_grafik."','1')";
+        $result                 = $this->mysql->query($query);
+        return $result;                                
+    }
+
+    function delGrafikStatusLock($date_grafik)
+    {
+        $date_grafik            = $this->mysql->real_escape_string($date_grafik);
+        $query                  = "DELETE FROM `grafik_status` WHERE `gs_date` = '".$date_grafik."'";
+        $result                 = $this->mysql->query($query);
+        return $result;                                
+    }
 }
 ?>

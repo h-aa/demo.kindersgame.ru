@@ -37,7 +37,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
         <div class="navbar-collapse collapse">                                                                                                                                                                                                                           
           <ul class="nav navbar-nav navbar-right">                                                                                          
             <li <?=$this->help->urlActive('schedule')?>><a href="/schedule/">Расписание</a></li>                                                                                          
-        <?php if($this->auth->isLogin()){ ?>
+        <?php if($this->auth->isLogin() && $_SESSION['user_type'] == 1){ ?>
             <li>                                                                                                          
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Администрирование <b class="caret"></b></a>                                 
                 <ul class="dropdown-menu">

@@ -52,7 +52,9 @@ require_once('views/header.php');
             ?>                    
                     <br>
                     <button class="btn btn-default" onclick="printDiv('print_<?=$a?>')"><i class="fa fa-print" aria-hidden="true" style="font-size: 17px;"></i></button>
-            <?php } ?>        
+            <?php } ?>
+                    <br>
+                    <?=$this->checkGrafikStatus($date_full)?>                    
 				</div>
 				<div class="col-md-10">
 					<h3><!--Расписание занятий--></h3>
@@ -163,7 +165,8 @@ require_once('views/header.php');
 
 <?php
         }
-$this->help->error();       
+$this->help->error();
+$this->help->message();       
 require_once('views/footer.php');
 ?>
 <script type="text/javascript">

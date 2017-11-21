@@ -1071,7 +1071,37 @@ public function student_add()
         }
     }
 
-    
+    public function change_grafik_status($date_grafik = false)
+    {
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(11))
+        {
+            header('Location: /');
+            exit();
+        }
+        if(!$date_grafik)
+        {
+            header('Location: /');
+            exit();            
+        }
+        if(strtotime(date("d.m.Y")) > strtotime($date_grafik))
+        {
+            header('Location: /');
+            exit();            
+        }
+
+        $date_grafik = htmlspecialchars($date_grafik);
+        $check_grafik = $this->model->getGrafikStatus($date_grafik);
+        if($check_grafik->num_rows === 0){
+            $this->model->addGrafikStatusLock($date_grafik);
+            $text = 'Утверждён';
+        } else {
+            $this->model->delGrafikStatusLock($date_grafik);
+            $text = 'На утверждение';
+        }
+        $this->help->message[] = 'Статус графика на <b>'.$date_grafik.'</b> изменён на <b>"'.$text.'"</b>';
+        //header('Location: /');
+        $this->schedule();        
+    }    
     
     
     
@@ -1181,9 +1211,7 @@ public function student_add()
             }
         }
         require_once('views/lesson_time_select_free.php');
-        exit();        
-
-        
+        exit();                
     }
 
     // Различные вспомогательные функции
@@ -1270,7 +1298,32 @@ public function student_add()
                 return $text;
             }
         }
-    }        
+    }
+
+    private function checkGrafikStatus($date_grafik = false)
+    {
+        if(!$date_grafik)
+        {
+            return false;
+        } else {
+            $check_result = $this->model->getGrafikStatus($date_grafik);
+            if($check_result->num_rows === 0)
+            {
+                $text       = '<span class="grafik-status label label-danger">На утверждение</span>';
+                if(($this->auth->isAdmin() || $this->auth->userRights(11)) && (strtotime(date("d.m.Y")) <= strtotime($date_grafik)))
+                {
+                    $text  .= '<br><br><a class="btn btn-success btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">Утвердить</a>';    
+                }                 
+            } else {
+                $text       = '<span class="grafik-status label label-success">Утверждён</span>';
+                if(($this->auth->isAdmin() || $this->auth->userRights(11)) && (strtotime(date("d.m.Y")) <= strtotime($date_grafik)))
+                {               
+                    $text  .= '<br><br><a class="btn btn-danger btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">На утверждение</a>';    
+                }
+            }
+            return $text;
+        }
+    }
 
 }
 ?>
