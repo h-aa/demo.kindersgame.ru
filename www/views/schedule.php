@@ -47,13 +47,8 @@ require_once('views/header.php');
 				<div class="col-md-2 time">
 					<span class="daysc"><?=$date?></span>
 					<span class="monthsc"><?=$day_of_week?></span>
-            <?php
-            if($this->auth->isAdmin() || $this->auth->userRights(10)){                
-            ?>                    
-                    <br>
-                    <button class="btn btn-default" onclick="printDiv('print_<?=$a?>')"><i class="fa fa-print" aria-hidden="true" style="font-size: 17px;"></i></button>
-            <?php } ?>
-                    <br>
+
+                    
                     <?=$this->checkGrafikStatus($date_full)?>                    
 				</div>
 				<div class="col-md-10">
@@ -166,7 +161,8 @@ require_once('views/header.php');
 <?php
         }
 $this->help->error();
-$this->help->message();       
+$this->help->message();
+require_once('views/modal/copy_grafik_select_new_date.php');       
 require_once('views/footer.php');
 ?>
 <script type="text/javascript">

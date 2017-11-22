@@ -972,7 +972,7 @@ public function student_add()
             $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
             $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
             $u_type             = $_POST['u_type']          ? htmlspecialchars($_POST['u_type'])        : '';
-            $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';  
+            
         }
 
         if(!$_POST['edit'])
@@ -1099,8 +1099,45 @@ public function student_add()
             $text = 'На утверждение';
         }
         $this->help->message[] = 'Статус графика на <b>'.$date_grafik.'</b> изменён на <b>"'.$text.'"</b>';
-        //header('Location: /');
         $this->schedule();        
+    }
+
+    public function copy_grafik()
+    {
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(1))
+        {
+            header('Location: /');
+            exit();
+        }
+        $date_copy              = $_POST['date_copy']   ? htmlspecialchars($_POST['date_copy'])  : '';
+        $new_date               = $_POST['new_date']    ? htmlspecialchars($_POST['new_date'])   : '';
+        if(!$date_copy || !$new_date)
+        {
+            $this->help->error[]    = 'Отсутствует одна из дат';
+        }
+        if($date_copy && $new_date)
+        {
+            if($date_copy == $new_date)
+            {
+                $this->help->error[]    = 'Даты не могут быть равны';
+            }
+            if(date("w", strtotime($date_copy)) != date("w", strtotime($new_date)))
+            {
+                $this->help->error[]    = 'Не допускаются разные дни недели';
+            }
+            if(strtotime($new_date) < strtotime($date_copy))
+            {
+                $this->help->error[]    = 'Дата на которую копирует не может быть меньше копируемой даты';
+            }
+        }
+        if($this->help->error)
+        {
+            require_once("views/schedule.php");
+            exit();
+        } 
+
+        //$this->model->delLessonFromDate($new_date);
+
     }    
     
     
@@ -1309,18 +1346,29 @@ public function student_add()
             $check_result = $this->model->getGrafikStatus($date_grafik);
             if($check_result->num_rows === 0)
             {
-                $text       = '<span class="grafik-status label label-danger">На утверждение</span>';
+                $text       = '<br><span class="grafik-status label label-danger button-block">На утверждении</span><hr>';
+                $text      .= '<div class="btn-group-vertical button-block">';
                 if(($this->auth->isAdmin() || $this->auth->userRights(11)) && (strtotime(date("d.m.Y")) <= strtotime($date_grafik)))
                 {
-                    $text  .= '<br><br><a class="btn btn-success btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">Утвердить</a>';    
-                }                 
+                    $text  .= '<a class="btn btn-success btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">Утвердить</a>';    
+                }                
             } else {
-                $text       = '<span class="grafik-status label label-success">Утверждён</span>';
+                $text       = '<br><span class="grafik-status label label-success button-block">Утверждён</span><hr>';
+                $text      .= '<div class="btn-group-vertical button-block">';
                 if(($this->auth->isAdmin() || $this->auth->userRights(11)) && (strtotime(date("d.m.Y")) <= strtotime($date_grafik)))
                 {               
-                    $text  .= '<br><br><a class="btn btn-danger btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">На утверждение</a>';    
+                    $text  .= '<a class="btn btn-danger btn-xs  grafik-status" href="/change_grafik_status/'.$date_grafik.'" role="button">На утверждении</a>';    
                 }
             }
+            if($this->auth->isAdmin() || $this->auth->userRights(10))
+            {
+                $text   .= '<button class="btn btn-success btn-xs grafik-status grafik-print" value="print_'.strtotime($date_grafik).'">Распечатать</button>'; 
+            }
+            if($this->auth->isAdmin() || $this->auth->userRights(1))
+            {
+                $text  .= '<button class="btn btn-success btn-xs grafik-status grafik-copy" data-num-day-week="'.date("w", strtotime($date_grafik)).'" value="'.$date_grafik.'"  role="button" disabled>Копировать</button>';    
+            }                
+            $text      .= '</div>';            
             return $text;
         }
     }

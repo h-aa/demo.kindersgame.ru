@@ -1,4 +1,5 @@
 <?php
+defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 ?>
             <div id="errorModalBox" class="modal">
             <div class="modal-dialog">
