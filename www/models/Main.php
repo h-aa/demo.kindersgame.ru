@@ -462,6 +462,14 @@ class MainModel
         return $result;
     }
 
+    function getLessonFromDate($l_date)
+    {
+        $l_date                 = $this->mysql->real_escape_string($l_date);
+        $query                  = "SELECT * FROM `lessons` WHERE `l_date` = '".$l_date."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
     function delLessonFromDate($l_date)
     {
         $l_date                 = $this->mysql->real_escape_string($num_lesson);

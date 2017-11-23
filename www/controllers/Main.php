@@ -17,7 +17,7 @@ class MainController
     public function schedule()
     {	
         $this->help->action = 'schedule';
-        if($_POST)
+        if($_POST && !$_POST['date_copy'])
         {
             if(!$this->auth->isAdmin() && !$this->auth->userRights(10))
             {
@@ -1130,13 +1130,31 @@ public function student_add()
                 $this->help->error[]    = 'Дата на которую копирует не может быть меньше копируемой даты';
             }
         }
+        error:
         if($this->help->error)
         {
-            require_once("views/schedule.php");
+            $this->schedule();
+            //require_once("views/schedule.php");
             exit();
         } 
 
-        //$this->model->delLessonFromDate($new_date);
+        $this->model->delLessonFromDate($new_date);
+        $lessons = $this->model->getLessonFromDate($date_copy);
+        if($lessons->num_rows === 0)
+        {
+            $this->help->error[]    = 'Отсутствуют занятия в исходной дате';
+            goto error;
+        }
+
+        while($row = $lessons->fetch_assoc())
+        {
+            $unix_time_start    = strtotime($new_date.' '.$row['l_tt_hour_start'].':'.$row['l_tt_minut_start']);
+            $unix_time_end      = strtotime($new_date.' '.$row['l_tt_hour_end'].':'.$row['l_tt_minut_end']);
+            $this->model->addLesson($_SESSION['user_id'], $row['l_st_id'], $row['l_s_id'], $row['l_t_id'], $new_date, $row['l_tt_id'], $row['l_tt_hour_start'], $row['l_tt_minut_start'], $row['l_tt_hour_end'], $row['l_tt_minut_end'], $unix_time_start, $unix_time_end);
+            
+        }
+        $this->help->message[]    = 'Данные от <b>'.$date_copy.'</b> успешно скопированны в <b>'.$new_date.'</b>';        
+        $this->schedule();
 
     }    
     
@@ -1362,11 +1380,11 @@ public function student_add()
             }
             if($this->auth->isAdmin() || $this->auth->userRights(10))
             {
-                $text   .= '<button class="btn btn-success btn-xs grafik-status grafik-print" value="print_'.strtotime($date_grafik).'">Распечатать</button>'; 
+                $text   .= '<button class="btn btn-default btn-xs grafik-status grafik-print" value="print_'.strtotime($date_grafik).'">Распечатать</button>'; 
             }
             if($this->auth->isAdmin() || $this->auth->userRights(1))
             {
-                $text  .= '<button class="btn btn-success btn-xs grafik-status grafik-copy" data-num-day-week="'.date("w", strtotime($date_grafik)).'" value="'.$date_grafik.'"  role="button" disabled>Копировать</button>';    
+                $text  .= '<button class="btn btn-default btn-xs grafik-status grafik-copy" data-num-day-week="'.date("w", strtotime($date_grafik)).'" value="'.$date_grafik.'"  role="button">Копировать</button>';    
             }                
             $text      .= '</div>';            
             return $text;

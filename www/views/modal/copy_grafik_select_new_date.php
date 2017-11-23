@@ -15,6 +15,7 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                             <label class="col-md-6 control-label" for="t_phone">На какую дату копировать</label>  
                                 <div class="col-md-4">
                                 <input id="new_date" name="new_date" type="text" class="form-control input-md date" required>
+                                <span class="help-block"><small><em>Внимание! Все ранее добавленные занятия на выбранную дату будут удалены</em></small></span>
                                 </div>
                             </div>
 
