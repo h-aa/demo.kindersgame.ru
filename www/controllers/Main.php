@@ -972,7 +972,7 @@ public function student_add()
             $u_phone            = $_POST['u_phone']         ? htmlspecialchars($_POST['u_phone'])       : '';
             $u_comment          = $_POST['u_comment']       ? htmlspecialchars($_POST['u_comment'])     : '';
             $u_type             = $_POST['u_type']          ? htmlspecialchars($_POST['u_type'])        : '';
-            
+            $u_active           = $_POST['u_active']        ? htmlspecialchars($_POST['u_active'])      : '';
         }
 
         if(!$_POST['edit'])
