@@ -4,6 +4,7 @@ require_once('config.php');
 require_once('models/Main.php');
 require_once('classes/Auth.php');
 require_once('classes/Help.php');
+require_once('classes/Smsc_api.php');
 require_once('controllers/Main.php');
 $controllers 	= new MainController();
 $url_data 	= explode('/', $_SERVER['REQUEST_URI']);

@@ -679,6 +679,14 @@ class MainModel
         return $result;        
     }
 
+    function getStudentParent($st_id)
+    {
+        $st_id                  = $this->mysql->real_escape_string($st_id);
+        $query                  = "SELECT * FROM `parents_student` WHERE `ps_st_id` = '".$st_id."'";
+        $result                 = $this->mysql->query($query);
+        return $result;        
+    }
+
     function getGrafikStatus($date_grafik)
     {
         $date_grafik            = $this->mysql->real_escape_string($date_grafik);

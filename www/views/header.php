@@ -46,6 +46,11 @@ defined('COMMENTLIMIT') OR exit('No direct script access allowed');
                     <li class="dropdown-header">Расписание</li>                                                                                 
                     <li <?=$this->help->urlActive('lesson_add')?>><a href="/lesson_add/">Добавить урок в расписание</a></li>
                 <?php } ?>
+                <?php if($this->auth->userRights(12) || $this->auth->isAdmin()){ ?>
+                    <li class="divider"></li>                                                                                                   
+                    <li class="dropdown-header">SMS</li>                                                                                 
+                    <li <?=$this->help->urlActive('send_sms')?>><a href="/send_sms/">Отправить уведомление о занятиях</a></li>
+                <?php } ?>                
                 <?php if($this->auth->userRights(3) || $this->auth->userRights(4) || $this->auth->isAdmin()){ ?>
                     <li class="divider"></li>                                                                                                   
                     <li class="dropdown-header">Ученики</li>                                                                                 

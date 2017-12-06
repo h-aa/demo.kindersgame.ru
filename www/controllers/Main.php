@@ -1,17 +1,18 @@
 <?php
-defined('COMMENTLIMIT') OR exit('No direct script access allowed');
 class MainController
 {
     private $help;
     private $model;
     private $auth;
     private $action;
+    private $sms;
 
     public function __construct()
     {
 	    $this->help 	= new Help;
 	    $this->model 	= new MainModel();
 	    $this->auth 	= new Auth();
+        $this->sms      = new Smsc_api();
     }
 
     public function schedule()
@@ -1158,7 +1159,92 @@ public function student_add()
 
     }    
     
-    
+    public function send_sms()
+    {
+        $this->help->action = 'send_sms';
+        if(!$this->auth->isAdmin() && !$this->auth->userRights(12))
+        {
+            header('Location: /');
+            exit();
+        }
+
+        if(!$_POST)
+        {
+            require_once("views/send_sms.php");
+            exit();
+        }
+
+        $data_sms              = $_POST['data_sms']     ? htmlspecialchars($_POST['data_sms'])  : '';
+        
+        $students = $this->model->getStudents();
+        $today  = strtotime(date("d.m.Y"));
+
+        if(!$data_sms)
+        {
+           $this->help->error[]    = 'Не указана дата, для которой необходимо отправить оповещения'; 
+        } else {        
+            if(strtotime($data_sms) < $today)
+            {
+                $this->help->error[]    = 'Дата, для которой необходимо отправить оповещения, не может быть меньше текущей'; 
+            }
+            if((strtotime($data_sms) - $today) > 5270400)
+            {
+                $this->help->error[]    = 'Дата, для которой необходимо отправить оповещения, не может быть больше 2-х месяцев от текущей даты'; 
+            }
+        }
+
+        if($this->help->error)
+        {
+            require_once("views/send_sms.php");
+            exit();            
+        }
+        $lessons = $this->model->getLessonFromDate($data_sms);
+        if($lessons->num_rows === 0)
+        {
+            $this->help->message[]  =   'Для выбранной даты <b>'.$data_sms.'</b> отсутствуют занятия!';
+            require_once("views/send_sms.php");
+            exit();            
+        }
+        while($lesson = $lessons->fetch_assoc())
+        {
+            $parent = $this->model->getStudentParent($lesson['l_st_id']);
+            if($parent->num_rows === 0 )
+            {
+                $this->help->error[] = 'Ошибка при получение ID родителя';
+                require_once("views/send_sms.php");
+                exit();                
+            }
+            $parent = $parent->fetch_assoc();
+            $user_data = $this->model->getUserData($parent['ps_u_id']);
+            if($user_data->num_rows === 0)
+            {
+                $this->help->error[] = 'Ошибка при получение данных родителя';
+                require_once("views/send_sms.php");
+                exit();                
+            }
+            $user_data = $user_data->fetch_assoc();
+            $subject = $this->model->getSubjectData($lesson['l_s_id']);
+            if($subject->num_rows === 0)
+            {
+                $this->help->error[] = 'Ошибка при получение данных предмета';
+                require_once("views/send_sms.php");
+                exit();                
+            }
+            $subject = $subject->fetch_assoc();
+            $message = 'Напоминаем, что '.$data_sms.' в '.sprintf('%02d', $lesson['l_tt_hour_start']).':'.sprintf('%02d', $lesson['l_tt_minut_start']).' назначено занятие по предмету '.$subject['s_name'];
+            $sms_sending = $this->sms->send_sms($user_data['u_phone'], $message, 0);
+            if(!$sms_sending)
+            {
+                $this->help->error[] = 'Не удалось отправить сообщение на номер '.$user_data['u_phone'];
+            }
+        }
+        if(!$this->help->error)
+        {
+            $this->help->message[] = 'Уведомление на '.$data_sms.' успешно отправлены!';
+        }
+            require_once("views/send_sms.php");
+            exit();        
+    }
     
     
     
